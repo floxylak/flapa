@@ -45,3 +45,6 @@ Thumbs.db
 ###
 [Ll]ogs/
 *.log
+
+.vscode/
+UserSettings/
