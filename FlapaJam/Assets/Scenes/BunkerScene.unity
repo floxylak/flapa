@@ -154,8 +154,8 @@ MonoBehaviour:
   speed: 5
   gravity: -29.43
   movementInertia: 3
-  toggleSprint: 1
-  toggleCrouch: 1
+  toggleSprint: 0
+  toggleCrouch: 0
   playerModel: {fileID: 1549012708}
 --- !u!114 &11945780
 MonoBehaviour:
