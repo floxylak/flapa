@@ -1,42 +1,47 @@
 ﻿using UnityEngine;
 
-public class PlayerLook : MonoBehaviour
+
+namespace Player.Input
 {
-    public Camera cam;
-    private float _xRotation;
-
-    public float xSensitivity = 0.2f;
-    public float ySensitivity = 0.2f;
-
-    private void Awake()
+    public class PlayerLook : MonoBehaviour
     {
-        if (cam == null)
+        public Camera cam;
+        private float _xRotation;
+
+        public float xSensitivity = 0.2f;
+        public float ySensitivity = 0.2f;
+
+        private void Awake()
         {
-            cam = Camera.main;
             if (cam == null)
             {
-                Debug.LogError("PlayerLook: No camera assigned and no Main Camera found in the scene!");
+                cam = Camera.main;
+                if (cam == null)
+                {
+                    Debug.LogError("PlayerLook: No camera assigned and no Main Camera found in the scene!");
+                }
             }
+        }
+
+        private void Start()
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+        }
+
+        public void ProcessLook(Vector2 input)
+        {
+            if (cam is null)
+                return;
+    
+            var mouseX = input.x * xSensitivity;
+            var mouseY = input.y * ySensitivity;
+
+            _xRotation -= mouseY;
+            _xRotation = Mathf.Clamp(_xRotation, -80f, 80f);
+    
+            cam.transform.localRotation = Quaternion.Euler(_xRotation, 0f, 0f);
+            transform.Rotate(Vector3.up * mouseX);
         }
     }
 
-    private void Start()
-    {
-        Cursor.lockState = CursorLockMode.Locked;
-    }
-
-    public void ProcessLook(Vector2 input)
-    {
-        if (cam is null)
-            return;
-    
-        var mouseX = input.x * xSensitivity;
-        var mouseY = input.y * ySensitivity;
-
-        _xRotation -= mouseY;
-        _xRotation = Mathf.Clamp(_xRotation, -80f, 80f);
-    
-        cam.transform.localRotation = Quaternion.Euler(_xRotation, 0f, 0f);
-        transform.Rotate(Vector3.up * mouseX);
-    }
 }

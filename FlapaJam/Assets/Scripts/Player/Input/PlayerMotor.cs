@@ -1,7 +1,10 @@
 ﻿using System;
+using Player.Stats;
 using UnityEngine;
 using UnityEngine.Serialization;
 
+namespace Player.Input
+{
 public class PlayerMotor : MonoBehaviour
 {
     private CharacterController _controller;
@@ -68,7 +71,7 @@ public class PlayerMotor : MonoBehaviour
     {
         if (input.magnitude == 0)
         {
-            _moveDirection = Vector3.Lerp(_moveDirection, Vector3.zero, movementInertia * Time.deltaTime);
+            _moveDirection = Vector3.Slerp(_moveDirection, Vector3.zero, movementInertia * Time.deltaTime);
             return;
         }
 
@@ -80,11 +83,11 @@ public class PlayerMotor : MonoBehaviour
     {
         _lerpCrouch = true;
         _crouchTimer = 0f;
-        if (keyDown && !_inputManager.IsCrouching)
+        if (keyDown && _inputManager.IsCrouching)
         {
             speed = _originalSpeed / 2;
         }
-        else if (!keyDown && _inputManager.IsCrouching)
+        else if (!keyDown && !_inputManager.IsCrouching)
         {
             speed = _originalSpeed;
         }
@@ -128,9 +131,9 @@ public class PlayerMotor : MonoBehaviour
         if (!_lerpCrouch)
             return;
 
-        _crouchTimer += Time.deltaTime;
-        float p = _crouchTimer / 1;
-        p *= p;
+        _crouchTimer += Time.deltaTime * 0.5f; 
+        float p = _crouchTimer / 1.5f; 
+        p = Mathf.SmoothStep(0, 1, p);
 
         _controller.height = Mathf.Lerp(_controller.height, _inputManager.IsCrouching ? 1 : 2, p);
 
@@ -140,10 +143,13 @@ public class PlayerMotor : MonoBehaviour
             playerModel.localScale = Vector3.Lerp(playerModel.localScale, targetScale, p);
         }
 
-        if (p > 1)
+        if (p >= 1)
         {
             _lerpCrouch = false;
             _crouchTimer = 0f;
         }
     }
+
+}
+
 }

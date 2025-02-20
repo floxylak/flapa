@@ -1,104 +1,108 @@
-﻿using System;
-using UnityEngine;
-
-public class PlayerStamina : MonoBehaviour
+﻿namespace Player.Stats
 {
-    public float maxStamina = 100f;
-    public float staminaRegenRate = 5f;
-    public float staminaDrainRate = 30f; // Stamina drains at this rate per second
-    public float currentStamina { get; private set; }
+    using System;
+    using UnityEngine;
 
-    private float staminaRegenDelay = 5f; 
-    private float extendedRegenDelay = 10f; 
-    private float lastUsedTime;
-    private bool staminaEmpty;
-    private bool isUsingStamina;
-    private bool isRegenerating;
-
-    private float _lastLoggedStamina;
-
-    private void Start()
+    public class PlayerStamina : MonoBehaviour
     {
-        currentStamina = maxStamina;
-        staminaEmpty = false;
-        isRegenerating = false;
-    }
+        public float maxStamina = 100f;
+        public float staminaRegenRate = 5f;
+        public float staminaDrainRate = 30f; // Stamina drains at this rate per second
+        public float currentStamina { get; private set; }
 
-    private void Update()
-    {
-        if (isUsingStamina)
+        private float staminaRegenDelay = 5f;
+        private float extendedRegenDelay = 10f;
+        private float lastUsedTime;
+        private bool staminaEmpty;
+        private bool isUsingStamina;
+        private bool isRegenerating;
+
+        private float _lastLoggedStamina;
+
+        private void Start()
         {
-            DrainStamina();
-        }
-        else if (!isRegenerating && Time.time - lastUsedTime >= GetRegenDelay())
-        {
-            isRegenerating = true; 
+            currentStamina = maxStamina;
+            staminaEmpty = false;
+            isRegenerating = false;
         }
 
-        if (isRegenerating)
+        private void Update()
         {
-            Regenerate();
+            if (isUsingStamina)
+            {
+                DrainStamina();
+            }
+            else if (!isRegenerating && Time.time - lastUsedTime >= GetRegenDelay())
+            {
+                isRegenerating = true;
+            }
+
+            if (isRegenerating)
+            {
+                Regenerate();
+            }
+
+            if (Mathf.Abs(currentStamina - _lastLoggedStamina) > 0.1f)
+            {
+                Debug.Log("Current Stamina: " + currentStamina);
+                _lastLoggedStamina = currentStamina;
+            }
         }
 
-        if (Mathf.Abs(currentStamina - _lastLoggedStamina) > 0.1f)
+        public void StartUsingStamina()
         {
-            Debug.Log("Current Stamina: " + currentStamina);
-            _lastLoggedStamina = currentStamina;
+            if (!staminaEmpty && !isRegenerating)
+            {
+                isUsingStamina = true;
+            }
         }
-    }
 
-    public void StartUsingStamina()
-    {
-        if (!staminaEmpty && !isRegenerating) 
+        public void StopUsingStamina()
         {
-            isUsingStamina = true;
-        }
-    }
-
-    public void StopUsingStamina()
-    {
-        isUsingStamina = false;
-        lastUsedTime = Time.time;
-    }
-
-    private void DrainStamina()
-    {
-        if (staminaEmpty)
-            return;
-
-        currentStamina -= staminaDrainRate * Time.deltaTime;
-        currentStamina = Mathf.Clamp(currentStamina, 0, maxStamina);
-
-        if (currentStamina <= 0)
-        {
-            staminaEmpty = true;
             isUsingStamina = false;
             lastUsedTime = Time.time;
         }
-    }
 
-    private void Regenerate()
-    {
-        if (currentStamina < maxStamina)
+        private void DrainStamina()
         {
-            currentStamina += staminaRegenRate * Time.deltaTime;
+            if (staminaEmpty)
+                return;
+
+            currentStamina -= staminaDrainRate * Time.deltaTime;
             currentStamina = Mathf.Clamp(currentStamina, 0, maxStamina);
+
+            if (currentStamina <= 0)
+            {
+                staminaEmpty = true;
+                isUsingStamina = false;
+                lastUsedTime = Time.time;
+            }
         }
 
-        if (currentStamina >= maxStamina)
+        private void Regenerate()
         {
-            staminaEmpty = false;
-            isRegenerating = false; 
+            if (currentStamina < maxStamina)
+            {
+                currentStamina += staminaRegenRate * Time.deltaTime;
+                currentStamina = Mathf.Clamp(currentStamina, 0, maxStamina);
+            }
+
+            if (currentStamina >= maxStamina)
+            {
+                staminaEmpty = false;
+                isRegenerating = false;
+            }
+        }
+
+        private float GetRegenDelay()
+        {
+            return staminaEmpty ? extendedRegenDelay : staminaRegenDelay;
+        }
+
+        public bool CanSprint()
+        {
+            return !staminaEmpty && !isRegenerating;
         }
     }
 
-    private float GetRegenDelay()
-    {
-        return staminaEmpty ? extendedRegenDelay : staminaRegenDelay;
-    }
-
-    public bool CanSprint()
-    {
-        return !staminaEmpty && !isRegenerating; 
-    }
 }
