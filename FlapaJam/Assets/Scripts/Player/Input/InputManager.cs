@@ -6,7 +6,7 @@ namespace Player.Input
     public class InputManager : MonoBehaviour
     {
         private PlayerInput _playerInput;
-        private PlayerInput.OnFootActions _onFoot;
+        public PlayerInput.OnFootActions _onFoot;
     
         private PlayerMotor _motor;
         private PlayerLook _look;
@@ -59,7 +59,7 @@ namespace Player.Input
         }
     
     
-        public void HandleCrouch(bool keyDown)
+        private void HandleCrouch(bool keyDown)
         {
             if (_motor == null) return;
     
@@ -67,7 +67,7 @@ namespace Player.Input
             _motor.Crouch(_isCrouching);
         }
     
-        public void HandleSprint(bool keyDown)
+        private void HandleSprint(bool keyDown)
         {
             if (_motor == null) return;
     
