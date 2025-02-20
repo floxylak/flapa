@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Player.Interact.Interactables
+namespace Player.Interact
 {
     public class Door : Interactable
     {
@@ -14,8 +14,6 @@ namespace Player.Interact.Interactables
             doorOpen = !doorOpen;
             door.GetComponent<Animator>().SetBool("isOpen", doorOpen);
             Debug.Log("Interacting with " + gameObject.name);
-
-            promptMessage = doorOpen ? "Close Door" : "Open Door";
         }
     }
 }

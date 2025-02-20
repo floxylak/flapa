@@ -1,5 +1,4 @@
 ﻿using System;
-using Player.Input;
 using UnityEngine;
 
 namespace Player.Interact
@@ -34,7 +33,7 @@ namespace Player.Interact
                 if (hitInfo.collider.GetComponent<Interactable>() is not null)
                 {
                     var interactable = hitInfo.collider.GetComponent<Interactable>();
-                    _playerUI.UpdateText(interactable.promptMessage);
+                    _playerUI.UpdateText(interactable.promptMessage == string.Empty ? "Press 'E' to interact" : interactable.promptMessage);
                     
                     if (_inputManager._onFoot.Interact.triggered)
                     {
