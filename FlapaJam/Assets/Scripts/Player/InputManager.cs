@@ -1,13 +1,14 @@
 using System;
 using UnityEngine;
 
-namespace Player.Input
+namespace Player
 {
     public class InputManager : MonoBehaviour
     {
         private PlayerInput _playerInput;
         public PlayerInput.OnFootActions _onFoot;
-    
+        public PlayerInput.InventoryActions _inventory;
+        
         private PlayerMotor _motor;
         private PlayerLook _look;
     
@@ -40,6 +41,10 @@ namespace Player.Input
             _onFoot = _playerInput.OnFoot;
             _onFoot.Enable();
             
+            _inventory = _playerInput.Inventory;
+            _inventory.Enable();
+            
+            
             _onFoot.Crouch.started += ctx => HandleCrouch(true);
             _onFoot.Crouch.canceled += ctx => HandleCrouch(false);
     
@@ -50,6 +55,7 @@ namespace Player.Input
         private void OnDisable()
         {
             _onFoot.Disable();
+            _inventory.Disable();
             
             _onFoot.Crouch.started -= ctx => HandleCrouch(true);
             _onFoot.Crouch.canceled -= ctx => HandleCrouch(false);

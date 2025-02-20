@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 
-namespace Player.Input
+namespace Player
 {
     public class PlayerLook : MonoBehaviour
     {

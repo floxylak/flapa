@@ -1,9 +1,8 @@
 ﻿using System;
 using Player.Stats;
 using UnityEngine;
-using UnityEngine.Serialization;
 
-namespace Player.Input
+namespace Player
 {
 public class PlayerMotor : MonoBehaviour
 {
