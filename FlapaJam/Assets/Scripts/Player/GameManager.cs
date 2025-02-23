@@ -393,6 +393,13 @@ namespace Player
                 Debug.Log("Player tries to sleep but tasks are incomplete.", this);
             }
         }
+        
+        public void GameOver()
+        {
+            gameEnded = true;
+            Debug.Log("Game Over - Player caught by HunterGhost!");
+            // SceneManager.LoadScene("GameOverScene"); // Uncomment if you have a game over scene
+        }
 
         private void EndSequence()
         {

@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
+using Player;
 
-namespace Player
+namespace Ghost
 {
     public class RandomRoom : MonoBehaviour
     {
