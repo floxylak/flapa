@@ -3,43 +3,44 @@ using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
-    public GameObject mainMenuCanvas; // Drag MainMenuCanvas here
-    public Camera menuCamera;         // Drag MenuCamera here
-    public Camera playerCamera;       // Drag PlayerCamera here
+    public GameObject mainMenuCanvas;
+    public Camera menuCamera;
+    public Camera playerCamera;
 
     void Start()
     {
         mainMenuCanvas.SetActive(true);
         menuCamera.enabled = true;
         playerCamera.enabled = false;
-
-        // Force cursor on
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-        Debug.Log("MainMenu Start - Cursor forced unlocked and visible");
+        Debug.Log("MainMenu Start - Menu camera on");
     }
 
-    public void NewGame()
+    void Update()
+    {
+        // Check if Enter key is pressed
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            StartGame();
+        }
+    }
+
+    private void StartGame()
     {
         mainMenuCanvas.SetActive(false);
         menuCamera.enabled = false;
         playerCamera.enabled = true;
+        Debug.Log("Game Started - Player camera on");
+    }
 
-        // Lock cursor for gameplay
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-        Debug.Log("New Game - Cursor locked and hidden");
+    // Keeping these methods in case you want to use them later
+    public void NewGame()
+    {
+        StartGame();
     }
 
     public void ContinueGame()
     {
-        mainMenuCanvas.SetActive(false);
-        menuCamera.enabled = false;
-        playerCamera.enabled = true;
-
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-        Debug.Log("Continue Game - Cursor locked and hidden");
+        StartGame();
     }
 
     public void Options()

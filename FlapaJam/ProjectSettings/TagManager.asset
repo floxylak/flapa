@@ -23,6 +23,7 @@ TagManager:
   - wire
   - SafeDoor
   - AccessCode
+  - MenuCam
   layers:
   - Default
   - TransparentFX
