@@ -3,7 +3,26 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 3
-  tags: []
+  tags:
+  - FoodItem
+  - Flashlight
+  - Radio
+  - Rat
+  - MouseTrap
+  - AirVentilation
+  - ExitDoor
+  - Bomb
+  - WaterBucket
+  - RadioBroken
+  - RatCooked
+  - BombItem
+  - BombExplode
+  - Exit
+  - specialItem
+  - battery
+  - wire
+  - SafeDoor
+  - AccessCode
   layers:
   - Default
   - TransparentFX
@@ -13,7 +32,7 @@ TagManager:
   - UI
   - Interactable
   - Ground
-  - 
+  - Bucket
   - 
   - 
   - 
