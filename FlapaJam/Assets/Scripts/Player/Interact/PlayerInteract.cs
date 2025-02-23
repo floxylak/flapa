@@ -18,7 +18,7 @@ namespace Player.Interact
             _inputManager = GetComponent<InputManager>() ?? throw new MissingComponentException($"{nameof(InputManager)} not found.");
         }
 
-private void Update()
+        private void Update()
         {
             _playerUI.UpdateText(string.Empty);
             Ray ray = new Ray(_camera.transform.position, _camera.transform.forward);

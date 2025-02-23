@@ -42,6 +42,7 @@ namespace Player
         public int CurrentDay => currentDay;
         public List<GameObject> TaskItems => taskItems;
         public bool CanCraftBomb => canCraftBomb;
+        public int MaxDays => maxDays;
 
         private void Awake()
         {

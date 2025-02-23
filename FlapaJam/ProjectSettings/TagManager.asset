@@ -33,9 +33,9 @@ TagManager:
   - Interactable
   - Ground
   - Bucket
-  - 
-  - 
-  - 
+  - Player
+  - Spawn
+  - Roof
   - 
   - 
   - 
