@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using TMPro; // For TextMeshPro
 
 namespace Player.Interact
 {
@@ -8,6 +9,8 @@ namespace Player.Interact
         [Header("References")]
         [SerializeField] private Transform player;
         [SerializeField] private Light flashlight;
+        [SerializeField] private GameObject interactiveCanvas; // The Canvas for the UI
+        [SerializeField] private TMP_Text promptText; // TextMeshPro text for the prompt
 
         [Header("Flicker Settings")]
         [SerializeField] private float flickerMinInterval = 0.1f;
@@ -19,11 +22,16 @@ namespace Player.Interact
         [SerializeField] private float maxIntensity = 1.5f;
         [SerializeField] private float dimSpeed = 1f;
 
+        [Header("Interaction Settings")]
+        [SerializeField] private float interactionDistance = 2f; // How close the player needs to be
+        [SerializeField] private KeyCode interactKey = KeyCode.E; // Key to interact
+
         private InventoryManager inventory;
         private InputManager inputManager;
         private bool isFlickering = false;
         private float originalIntensity;
         private Coroutine flickerCoroutine;
+        private bool isPlayerInRange = false;
 
         private void Awake()
         {
@@ -34,7 +42,7 @@ namespace Player.Interact
         {
             if (player == null)
             {
-                if (Camera.main != null && Camera.main.transform.parent != null && 
+                if (Camera.main != null && Camera.main.transform.parent != null &&
                     Camera.main.transform.parent.parent != null)
                 {
                     player = Camera.main.transform.parent.parent;
@@ -46,7 +54,7 @@ namespace Player.Interact
                     return;
                 }
             }
-            
+
             if (flashlight == null)
             {
                 flashlight = GetComponent<Light>();
@@ -59,7 +67,7 @@ namespace Player.Interact
             }
             flashlight.enabled = false;
             originalIntensity = flashlight.intensity;
-            
+
             inventory = player.GetComponent<InventoryManager>();
             if (inventory == null)
             {
@@ -71,12 +79,31 @@ namespace Player.Interact
             {
                 Debug.LogWarning("Flashlight: InputManager not found on player.", this);
             }
+
+            if (interactiveCanvas != null)
+            {
+                interactiveCanvas.SetActive(false); // Start with UI hidden
+            }
         }
 
         private void Update()
         {
             if (!IsValidSetup()) return;
-            
+
+            // Check if player is in range
+            float distance = Vector3.Distance(transform.position, player.position);
+            isPlayerInRange = distance <= interactionDistance;
+
+            // Show/hide and update UI
+            if (interactiveCanvas != null)
+            {
+                interactiveCanvas.SetActive(isPlayerInRange && inventory.GetHeldItem() != gameObject);
+                if (isPlayerInRange && promptText != null && inventory.GetHeldItem() != gameObject)
+                {
+                    promptText.text = $"Press {interactKey} to pick up flashlight";
+                }
+            }
+
             if (inventory.GetHeldItem() == gameObject)
             {
                 if (inputManager.Inventory.Interact2.triggered)
@@ -89,6 +116,12 @@ namespace Player.Interact
                 flashlight.enabled = false;
                 StopFlicker();
             }
+
+            // Handle pickup interaction if not held
+            if (isPlayerInRange && inventory.GetHeldItem() != gameObject && Input.GetKeyDown(interactKey))
+            {
+                Interact();
+            }
         }
 
         protected override void Interact()
@@ -98,6 +131,10 @@ namespace Player.Interact
             if (inventory.AddItem(gameObject))
             {
                 Debug.Log($"Flashlight: Added {gameObject.name} to inventory.", this);
+                if (interactiveCanvas != null)
+                {
+                    interactiveCanvas.SetActive(false); // Hide UI when picked up
+                }
             }
         }
 
@@ -209,6 +246,12 @@ namespace Player.Interact
                 return false;
             }
             return true;
+        }
+
+        void OnDrawGizmos()
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(transform.position, interactionDistance);
         }
     }
 }

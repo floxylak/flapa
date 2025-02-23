@@ -1,21 +1,24 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro; // For TextMeshPro
 
 namespace Player.Interact
 {
-    public class BunkerHatch : Interactable
+    public class BunkerHatch : MonoBehaviour
     {
         [Header("References")]
         [SerializeField] private Transform player;
+        [SerializeField] private GameObject interactiveCanvas; // The Canvas for the UI
+        [SerializeField] private TMP_Text promptText; // TextMeshPro text for the prompt
 
         [Header("Interaction Settings")]
-        [SerializeField] private string targetSceneName = "BunkerScene";
-        [SerializeField] private float interactionDistance = 2f; // For validation, though PlayerInteract uses its own distance
-
-        public override string promptMessage => "Press 'E' to enter bunker"; // Added for PlayerInteract UI
+        [SerializeField] private string targetSceneName = "MAP BUNKER 2"; // Scene to load (update this to match your scene name)
+        [SerializeField] private float interactionDistance = 2f; // How close the player needs to be
+        [SerializeField] private KeyCode interactKey = KeyCode.E; // Key to interact
 
         private InventoryManager inventory;
         private InputManager inputManager;
+        private bool isPlayerInRange = false;
 
         private void Awake()
         {
@@ -30,11 +33,12 @@ namespace Player.Interact
                     Camera.main.transform.parent.parent != null)
                 {
                     player = Camera.main.transform.parent.parent;
+                    Debug.Log("BunkerHatch: Player automatically assigned via camera hierarchy.");
                 }
                 else
                 {
                     Debug.LogError("BunkerHatch: Player reference could not be assigned. " +
-                                 "Ensure the camera has enough parent levels or assign manually.", this);
+                                 "Ensure the camera has enough parent levels or assign manually in the Inspector.", this);
                     return;
                 }
             }
@@ -42,13 +46,28 @@ namespace Player.Interact
             inventory = player.GetComponent<InventoryManager>();
             if (inventory == null)
             {
-                Debug.LogWarning("BunkerHatch: InventoryManager not found on player.", this);
+                Debug.LogWarning("BunkerHatch: InventoryManager not found on player. Interaction may fail.", this);
             }
 
             inputManager = player.GetComponent<InputManager>();
             if (inputManager == null)
             {
-                Debug.LogWarning("BunkerHatch: InputManager not found on player.", this);
+                Debug.LogWarning("BunkerHatch: InputManager not found on player. Interaction may fail.", this);
+            }
+
+            if (interactiveCanvas == null)
+            {
+                Debug.LogWarning("BunkerHatch: Interactive Canvas is not assigned in the Inspector!", this);
+            }
+
+            if (promptText == null)
+            {
+                Debug.LogWarning("BunkerHatch: Prompt Text is not assigned in the Inspector!", this);
+            }
+
+            if (interactiveCanvas != null)
+            {
+                interactiveCanvas.SetActive(false); // Start with UI hidden
             }
         }
 
@@ -56,27 +75,45 @@ namespace Player.Interact
         {
             if (!IsValidSetup()) return;
 
-            // Optional: Local distance check for debugging, but PlayerInteract handles interaction
+            // Check if player is in range
             float distance = Vector3.Distance(transform.position, player.position);
-            if (distance > interactionDistance)
+            isPlayerInRange = distance <= interactionDistance;
+
+            // Show/hide and update UI with detailed logging
+            if (interactiveCanvas != null)
             {
-                return;
+                interactiveCanvas.SetActive(isPlayerInRange);
+                Debug.Log($"BunkerHatch: Canvas active: {isPlayerInRange}, Distance: {distance}");
+
+                if (isPlayerInRange && promptText != null)
+                {
+                    promptText.text = $"Press {interactKey} to enter bunker";
+                    Debug.Log("BunkerHatch: Updated prompt text to 'Press E to enter bunker'");
+                }
+                else if (isPlayerInRange && promptText == null)
+                {
+                    Debug.LogWarning("BunkerHatch: Prompt Text is null, UI won't display text!", this);
+                }
+            }
+            else
+            {
+                Debug.LogWarning("BunkerHatch: Interactive Canvas is null, UI won't display!", this);
             }
 
-            // Removed local input check; PlayerInteract handles this
+            // Handle interaction if not held (simplified since bunker hatch isn’t held in inventory)
+            if (isPlayerInRange && Input.GetKeyDown(interactKey))
+            {
+                Interact();
+                Debug.Log("BunkerHatch: Attempting to enter bunker...");
+            }
         }
 
-        protected override void Interact()
+        private void Interact()
         {
             if (!IsValidSetup()) return;
 
             SceneManager.LoadScene(targetSceneName);
             Debug.Log($"BunkerHatch: Loading scene: {targetSceneName}", this);
-        }
-
-        public override void BaseInteract()
-        {
-            Interact(); // Ensure PlayerInteract can trigger this
         }
 
         private bool IsValidSetup()
