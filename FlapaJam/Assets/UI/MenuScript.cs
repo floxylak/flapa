@@ -4,26 +4,42 @@ using UnityEngine.SceneManagement;
 public class MainMenu : MonoBehaviour
 {
     public GameObject mainMenuCanvas; // Drag MainMenuCanvas here
+    public Camera menuCamera;         // Drag MenuCamera here
+    public Camera playerCamera;       // Drag PlayerCamera here
 
     void Start()
     {
-        Time.timeScale = 0f; // Pauses game at start
-        mainMenuCanvas.SetActive(true); // Ensures menu is visible
-        Debug.Log("MainMenu started - Game should be paused");
+        mainMenuCanvas.SetActive(true);
+        menuCamera.enabled = true;
+        playerCamera.enabled = false;
+
+        // Force cursor on
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        Debug.Log("MainMenu Start - Cursor forced unlocked and visible");
     }
 
     public void NewGame()
     {
         mainMenuCanvas.SetActive(false);
-        Time.timeScale = 1f;
-        Debug.Log("New Game clicked");
+        menuCamera.enabled = false;
+        playerCamera.enabled = true;
+
+        // Lock cursor for gameplay
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        Debug.Log("New Game - Cursor locked and hidden");
     }
 
     public void ContinueGame()
     {
         mainMenuCanvas.SetActive(false);
-        Time.timeScale = 1f;
-        Debug.Log("Continue Game clicked");
+        menuCamera.enabled = false;
+        playerCamera.enabled = true;
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        Debug.Log("Continue Game - Cursor locked and hidden");
     }
 
     public void Options()
