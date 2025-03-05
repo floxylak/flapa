@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Core;
 using TMPro; // For TextMeshPro
 
 namespace Player.Interact
@@ -106,7 +107,7 @@ namespace Player.Interact
 
             if (inventory.GetHeldItem() == gameObject)
             {
-                if (inputManager.Inventory.Interact2.triggered)
+                if (inputManager.OnFoot.Interact.triggered)
                 {
                     ToggleFlashlight();
                 }

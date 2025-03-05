@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Core;
+using UnityEngine;
 using Player; // Add this to access TaskManager
 
 namespace Player.Interact

@@ -12,5 +12,5 @@ EditorBuildSettings:
     path: Assets/Scenes/MAP BUNKER 2.unity
     guid: 89bbd250357c70a4dbebf3db23c4c286
   m_configObjects:
-    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: b9f594b3b05f94e459eb6504fbef6206, type: 3}
   m_UseUCBPForAssetBundles: 0

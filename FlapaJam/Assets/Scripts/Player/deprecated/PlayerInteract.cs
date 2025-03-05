@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Core;
+using UnityEngine;
 
 namespace Player.Interact
 {
@@ -13,14 +14,14 @@ namespace Player.Interact
 
         private void Start()
         {
-            _camera = GetComponent<PlayerLook>()._camera ?? throw new MissingReferenceException($"{nameof(PlayerLook)} or its camera not found.");
+            _camera = Camera.main ?? throw new MissingReferenceException($"{nameof(PlayerLook)} or its camera not found.");
             _playerUI = GetComponent<PlayerUI>() ?? throw new MissingReferenceException($"{nameof(PlayerUI)} not found.");
             _inputManager = GetComponent<InputManager>() ?? throw new MissingComponentException($"{nameof(InputManager)} not found.");
         }
 
         private void Update()
         {
-            _playerUI.UpdateText(string.Empty);
+            _playerUI.UpdatePromptText(string.Empty);
             Ray ray = new Ray(_camera.transform.position, _camera.transform.forward);
 
             if (Physics.Raycast(ray, out RaycastHit hitInfo, _distance, _mask))
@@ -28,7 +29,7 @@ namespace Player.Interact
                 Interactable interactable = hitInfo.collider.GetComponent<Interactable>();
                 if (interactable != null)
                 {
-                    string prompt = string.IsNullOrEmpty(interactable.promptMessage) ? "Press 'E' to interact" : interactable.promptMessage;
+                    string prompt = string.IsNullOrEmpty(interactable.promptAction) ? "Press 'E' to interact" : interactable.promptAction;
 
                     if (interactable is Radio radio)
                     {
@@ -58,7 +59,7 @@ namespace Player.Interact
                             : "Hold 'E' to craft";
                     }
 
-                    _playerUI.UpdateText(prompt);
+                    _playerUI.UpdatePromptText(prompt);
 
                     if (_inputManager.OnFoot.Interact.triggered)
                     {
@@ -68,7 +69,7 @@ namespace Player.Interact
                     if (interactable is Radio radioInteract && 
                         !radioInteract.IsBroken() && 
                         radioInteract.IsPlaced() && 
-                        _inputManager.Inventory.Interact2.triggered)
+                        _inputManager.OnFoot.Interact.triggered)
                     {
                         radioInteract.ToggleRadio();
                     }

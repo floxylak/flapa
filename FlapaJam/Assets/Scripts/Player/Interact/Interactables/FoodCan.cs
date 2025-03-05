@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Core;
+using UnityEngine;
 
 namespace Player.Interact
 {
@@ -85,7 +86,7 @@ namespace Player.Interact
             if (!IsValidSetup() || isUsed) return;
 
             if (inventory.GetHeldItem() == gameObject && 
-                inputManager.Inventory.Interact2.triggered)
+                inputManager.OnFoot.Interact.triggered)
             {
                 UseFoodCan();
             }
