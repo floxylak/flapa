@@ -18,6 +18,8 @@ TagManager:
   - BombItem
   - BombExplode
   - Exit
+  - SafeDoor
+  - Door
   layers:
   - Default
   - TransparentFX
@@ -26,7 +28,7 @@ TagManager:
   - Water
   - UI
   - Interactable
-  - 
+  - Door
   - 
   - 
   - 
