@@ -11,8 +11,8 @@ namespace Player.Interact
         [Header("Desk Settings")]
         [SerializeField] private float craftHoldDuration = 3f; // Time to hold E to craft
 
-        private InventoryManager inventory;
-        private PlayerInteract playerInteract;
+        private InventoryController inventory;
+        private InteractController playerInteract;
         private TaskManager taskManager;
         private GameManager gameManager;
         private bool isCrafting = false;
@@ -20,10 +20,10 @@ namespace Player.Interact
 
         private void Awake()
         {
-            InitializeReferences();
+            //InitializeReferences();
         }
 
-        private void Update()
+        /*private void Update()
         {
             if (isCrafting && playerInteract != null && playerInteract.IsInteractHeld())
             {
@@ -82,7 +82,7 @@ namespace Player.Interact
             {
                 Debug.LogWarning("Desk: GameManager not found in scene!", this);
             }
-        }
+        }*/
 
         protected override void Interact()
         {

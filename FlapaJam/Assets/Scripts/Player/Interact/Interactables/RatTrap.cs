@@ -17,8 +17,8 @@ namespace Player.Interact
         [SerializeField] private float ratCollisionRadius = 0.1f;
 
         private Transform player;
-        private InventoryManager inventory;
-        private InputManager inputManager;
+        private InventoryController inventory;
+        private InputController inputManager;
         private TaskManager taskManager;
         private bool isPlaced = false;
         private bool isPermanentlyPlaced = false;
@@ -199,13 +199,13 @@ namespace Player.Interact
             }
             
             
-            inventory = player.GetComponent<InventoryManager>();
+            inventory = player.GetComponent<InventoryController>();
             if (inventory == null)
             {
                 Debug.LogWarning("RatTrap: InventoryManager not found on player.", this);
             }
 
-            inputManager = player.GetComponent<InputManager>();
+            inputManager = player.GetComponent<InputController>();
             if (inputManager == null)
             {
                 Debug.LogWarning("RatTrap: InputManager not found on player.", this);

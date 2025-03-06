@@ -9,8 +9,8 @@ namespace Player.Interact
         [Header("References")]
         [SerializeField] private Transform player;
 
-        private InventoryManager inventory;
-        private InputManager inputManager;
+        private InventoryController inventory;
+        private InputController inputManager;
         private TaskManager taskManager;
         private bool taskContributed = false; // Flag to track if this rat has contributed to the task
 
@@ -39,13 +39,13 @@ namespace Player.Interact
                 }
             }
 
-            inventory = player.GetComponent<InventoryManager>();
+            inventory = player.GetComponent<InventoryController>();
             if (inventory == null)
             {
                 Debug.LogWarning("Rat: InventoryManager not found on player.", this);
             }
 
-            inputManager = player.GetComponent<InputManager>();
+            inputManager = player.GetComponent<InputController>();
             if (inputManager == null)
             {
                 Debug.LogWarning("Rat: InputManager not found on player.", this);

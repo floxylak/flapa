@@ -37,7 +37,7 @@ namespace Player
         private bool canCraftBomb = false;
         private bool isPlayerInSafeRoom = false;
 
-        private InputManager inputManager;
+        private InputController inputManager;
         
         public int CurrentDay => currentDay;
         public List<GameObject> TaskItems => taskItems;
@@ -47,7 +47,7 @@ namespace Player
         private void Awake()
         {
             player = GameObject.Find("Player")?.transform;
-            inputManager = player?.GetComponent<InputManager>();
+            inputManager = player?.GetComponent<InputController>();
             taskManager = GameObject.Find("TaskManager")?.GetComponent<TaskManager>();
             
             if (inputManager == null) Debug.LogWarning("InputManager not found on player!", this);
