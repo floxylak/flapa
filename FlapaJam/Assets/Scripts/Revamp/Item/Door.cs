@@ -57,7 +57,7 @@ public class Door : MonoBehaviour
         targetPosition.y = Mathf.Max(targetPosition.y, minHeight); // Clamp height
 
         Vector3 desiredVelocity = (targetPosition - heldDoor.position) * dragSpeed;
-        heldDoor.velocity = Vector3.Lerp(heldDoor.velocity, desiredVelocity, Time.deltaTime * 10f);
+        heldDoor.linearVelocity = Vector3.Lerp(heldDoor.linearVelocity, desiredVelocity, Time.deltaTime * 10f);
 
         if ((heldDoor.position - playerCam.transform.position).sqrMagnitude > maxGrabDistance * maxGrabDistance)
         {
@@ -69,7 +69,7 @@ public class Door : MonoBehaviour
     {
         if (heldDoor != null)
         {
-            heldDoor.velocity = Vector3.zero;
+            heldDoor.linearVelocity = Vector3.zero;
             heldDoor.useGravity = true;
             heldDoor.isKinematic = true;
             heldDoor = null;
