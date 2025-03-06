@@ -17,7 +17,7 @@ namespace Player.Interact
         private bool isLocked = false;
         private float shakeTimer = 0f; // For spooky shake effect
         private Vector3 originalPosition;
-        private InventoryManager inventory; // To check and remove AccessCode
+        private InventoryController inventory; // To check and remove AccessCode
         private TaskManager taskManager; // To complete the task
         private Transform player; // To get InventoryManager
 
@@ -56,7 +56,7 @@ namespace Player.Interact
                 return;
             }
 
-            inventory = player.GetComponent<InventoryManager>();
+            inventory = player.GetComponent<InventoryController>();
             if (inventory == null)
             {
                 Debug.LogWarning("Door: InventoryManager not found on player!", this);

@@ -8,7 +8,7 @@ namespace Player.Interact
         [Header("References")]
         [SerializeField] private Transform player;
 
-        private InputManager inputManager;
+        private InputController inputManager;
         private TaskManager taskManager;
         private GameManager gameManager;
         private bool inUse = false; // Tracks if the bed has been used
@@ -35,7 +35,7 @@ namespace Player.Interact
                 }
             }
 
-            inputManager = player.GetComponent<InputManager>();
+            inputManager = player.GetComponent<InputController>();
             if (inputManager == null)
             {
                 Debug.LogWarning("Bed: InputManager not found on player.", this);

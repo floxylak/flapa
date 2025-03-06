@@ -16,8 +16,8 @@ namespace Player.Interact
         [SerializeField] private float interactionDistance = 2f; // How close the player needs to be
         [SerializeField] private KeyCode interactKey = KeyCode.E; // Key to interact
 
-        private InventoryManager inventory;
-        private InputManager inputManager;
+        private InventoryController inventory;
+        private InputController inputManager;
         private bool isPlayerInRange = false;
 
         private void Awake()
@@ -43,13 +43,13 @@ namespace Player.Interact
                 }
             }
 
-            inventory = player.GetComponent<InventoryManager>();
+            inventory = player.GetComponent<InventoryController>();
             if (inventory == null)
             {
                 Debug.LogWarning("BunkerHatch: InventoryManager not found on player. Interaction may fail.", this);
             }
 
-            inputManager = player.GetComponent<InputManager>();
+            inputManager = player.GetComponent<InputController>();
             if (inputManager == null)
             {
                 Debug.LogWarning("BunkerHatch: InputManager not found on player. Interaction may fail.", this);
@@ -100,7 +100,7 @@ namespace Player.Interact
                 Debug.LogWarning("BunkerHatch: Interactive Canvas is null, UI won't display!", this);
             }
 
-            // Handle interaction if not held (simplified since bunker hatch isn’t held in inventory)
+            // Handle interaction if not held (simplified since bunker hatch isnï¿½t held in inventory)
             if (isPlayerInRange && Input.GetKeyDown(interactKey))
             {
                 Interact();

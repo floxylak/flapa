@@ -27,8 +27,8 @@ namespace Player.Interact
         [SerializeField] private float interactionDistance = 2f; // How close the player needs to be
         [SerializeField] private KeyCode interactKey = KeyCode.E; // Key to interact
 
-        private InventoryManager inventory;
-        private InputManager inputManager;
+        private InventoryController inventory;
+        private InputController inputManager;
         private bool isFlickering = false;
         private float originalIntensity;
         private Coroutine flickerCoroutine;
@@ -69,13 +69,13 @@ namespace Player.Interact
             flashlight.enabled = false;
             originalIntensity = flashlight.intensity;
 
-            inventory = player.GetComponent<InventoryManager>();
+            inventory = player.GetComponent<InventoryController>();
             if (inventory == null)
             {
                 Debug.LogWarning("Flashlight: InventoryManager not found on player.", this);
             }
 
-            inputManager = player.GetComponent<InputManager>();
+            inputManager = player.GetComponent<InputController>();
             if (inputManager == null)
             {
                 Debug.LogWarning("Flashlight: InputManager not found on player.", this);

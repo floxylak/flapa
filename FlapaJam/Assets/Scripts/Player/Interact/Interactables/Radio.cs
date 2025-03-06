@@ -15,8 +15,8 @@ namespace Player.Interact
         [SerializeField] private string batteriesTag = "battery";
         [SerializeField] private string wiresTag = "wire";
 
-        private InventoryManager inventory;
-        private PlayerInteract playerInteract;
+        private InventoryController inventory;
+        private InteractController playerInteract;
         private TaskManager taskManager;
         private bool isRepairing = false;
         private float repairTimer = 0f;
@@ -25,10 +25,10 @@ namespace Player.Interact
 
         private void Awake()
         {
-            InitializeReferences();
+            // InitializeReferences();
         }
 
-        private void Update()
+        /*private void Update()
         {
             if (isRepairing && playerInteract != null && playerInteract.IsInteractHeld())
             {
@@ -81,7 +81,7 @@ namespace Player.Interact
             {
                 Debug.LogWarning("Radio: TaskManager not found in scene!", this);
             }
-        }
+        }*/
 
         protected override void Interact()
         {

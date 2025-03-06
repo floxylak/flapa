@@ -17,7 +17,7 @@ namespace Player.Interact
         [SerializeField] private float leakRate = 1f;
         [SerializeField] private float baseFillDuration = 5f;
 
-        private InputManager inputManager;
+        private InputController inputManager;
         private TaskManager taskManager; // New reference to TaskManager
         private float currentFill;
         private float fillStartTime;
@@ -57,7 +57,7 @@ namespace Player.Interact
 
             if (player != null)
             {
-                inputManager = player.GetComponent<InputManager>();
+                inputManager = player.GetComponent<InputController>();
             }
 
             taskManager = FindFirstObjectByType<TaskManager>();

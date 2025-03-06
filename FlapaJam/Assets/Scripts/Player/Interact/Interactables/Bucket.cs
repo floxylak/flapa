@@ -8,8 +8,8 @@ namespace Player.Interact
         [Header("References")]
         [SerializeField] private Transform player;
 
-        private InventoryManager inventory;
-        private InputManager inputManager;
+        private InventoryController inventory;
+        private InputController inputManager;
 
         private void Awake()
         {
@@ -33,13 +33,13 @@ namespace Player.Interact
                 }
             }
             
-            inventory = player.GetComponent<InventoryManager>();
+            inventory = player.GetComponent<InventoryController>();
             if (inventory == null)
             {
                 Debug.LogWarning("Bucket: InventoryManager not found on player.", this);
             }
 
-            inputManager = player.GetComponent<InputManager>();
+            inputManager = player.GetComponent<InputController>();
             if (inputManager == null)
             {
                 Debug.LogWarning("Bucket: InputManager not found on player.", this);
