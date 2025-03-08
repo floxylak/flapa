@@ -38,7 +38,8 @@ public class DraggableDoor : MonoBehaviour
     private Vector3 lastHitDirection; 
     private float accumulatedAngle;   
     private Coroutine autoCloseCoroutine; 
-
+    private Vector3 initialHitPoint;
+    
     void Start()
     {
         cam = PlayerSingleton.instance.cam.cam;
@@ -80,23 +81,30 @@ public class DraggableDoor : MonoBehaviour
         }
         
         Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-        Plane pivotPlane = new Plane(Vector3.up, pivotPoint.position);
-        float distance;
-
-        if (pivotPlane.Raycast(ray, out distance))
+        RaycastHit hit;
+        
+        // Check if we hit the door
+        if (Physics.Raycast(ray, out hit) && hit.transform == transform)
         {
-            Vector3 hitPoint = ray.GetPoint(distance);
-            Vector3 currentDirection = (hitPoint - pivotPoint.position).normalized;
-            currentDirection.y = 0f;
-            
-            lastHitDirection = currentDirection;
-            
-            Vector3 currentForward = pivotPoint.forward;
-            currentForward.y = 0f;
-            Vector3 initialForward = initialRotation * Vector3.forward;
-            initialForward.y = 0f;
-            accumulatedAngle = Vector3.SignedAngle(initialForward, currentForward, Vector3.up);
-            accumulatedAngle = Mathf.Clamp(accumulatedAngle, -maxAngle, maxAngle);
+            initialHitPoint = hit.point; // Store the initial hit point
+            Plane pivotPlane = new Plane(Vector3.up, initialHitPoint); // Use hit point instead of pivotPoint.position
+            float distance;
+
+            if (pivotPlane.Raycast(ray, out distance))
+            {
+                Vector3 hitPoint = ray.GetPoint(distance);
+                Vector3 currentDirection = (hitPoint - initialHitPoint).normalized;
+                currentDirection.y = 0f;
+                
+                lastHitDirection = currentDirection;
+                
+                Vector3 currentForward = pivotPoint.forward;
+                currentForward.y = 0f;
+                Vector3 initialForward = initialRotation * Vector3.forward;
+                initialForward.y = 0f;
+                accumulatedAngle = Vector3.SignedAngle(initialForward, currentForward, Vector3.up);
+                accumulatedAngle = Mathf.Clamp(accumulatedAngle, -maxAngle, maxAngle);
+            }
         }
     }
 
@@ -105,7 +113,7 @@ public class DraggableDoor : MonoBehaviour
         if (!isDragging) return;
 
         Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-        Plane pivotPlane = new Plane(Vector3.up, pivotPoint.position);
+        Plane pivotPlane = new Plane(Vector3.up, initialHitPoint); // Use initial hit point instead of pivotPoint.position
         float distance;
 
         if (pivotPlane.Raycast(ray, out distance))
@@ -135,8 +143,8 @@ public class DraggableDoor : MonoBehaviour
 
             if (drawGizmos)
             {
-                Debug.DrawRay(pivotPoint.position, lastHitDirection * 2f, Color.yellow); // Last direction
-                Debug.DrawRay(pivotPoint.position, currentDirection * 2f, Color.green);  // Current direction
+                Debug.DrawRay(initialHitPoint, lastHitDirection * 2f, Color.yellow);
+                Debug.DrawRay(initialHitPoint, currentDirection * 2f, Color.green);
             }
             Debug.Log($"Angle current direc: {currentDirection}, Accumulated Angle: {accumulatedAngle}, Total Angle: {currentAngle}");
         }
@@ -221,10 +229,10 @@ public class DraggableDoor : MonoBehaviour
         if (pivotPoint != null && drawGizmos)
         {
             Gizmos.color = Color.red;
-            Gizmos.DrawSphere(pivotPoint.position, 0.1f);
+            Gizmos.DrawSphere(initialHitPoint, 0.1f);
             
             Gizmos.color = Color.blue;
-            Gizmos.DrawRay(pivotPoint.position, pivotPoint.forward * 2f);
+            Gizmos.DrawRay(initialHitPoint, pivotPoint.forward * 2f);
         }
     }
 }
