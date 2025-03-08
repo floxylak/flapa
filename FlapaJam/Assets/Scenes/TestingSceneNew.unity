@@ -1319,7 +1319,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 435f9171fda446fda96da84cd5813e48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interactType: 2
+  interactType: 0
   bailOutRange: 5
   interactText: Interact
   requiresItem: 0
@@ -1350,11 +1350,11 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   maxAngle: 90
-  rotationSpeed: 100
+  rotationSpeed: 500
   closeAngleThreshold: 2
-  snapAngleThreshold: 10
-  closeAnimationSpeed: 5
-  pivotPoint: {fileID: 502534427}
+  snapAngleThreshold: 20
+  closeAnimationSpeed: 500
+  pivotPoint: {fileID: 0}
   state: 1
   currentAngle: 0
   drawGizmos: 0
