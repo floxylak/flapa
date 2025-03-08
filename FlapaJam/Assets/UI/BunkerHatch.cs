@@ -16,8 +16,8 @@ namespace Player.Interact
         [SerializeField] private float interactionDistance = 2f; // How close the player needs to be
         [SerializeField] private KeyCode interactKey = KeyCode.E; // Key to interact
 
-        private InventoryController inventory;
-        private InputController inputManager;
+        // private InventoryController inventory;
+        private PlayerInputCont inputManager;
         private bool isPlayerInRange = false;
 
         private void Awake()
@@ -43,13 +43,13 @@ namespace Player.Interact
                 }
             }
 
-            inventory = player.GetComponent<InventoryController>();
-            if (inventory == null)
-            {
-                Debug.LogWarning("BunkerHatch: InventoryManager not found on player. Interaction may fail.", this);
-            }
+            // inventory = player.GetComponent<InventoryController>();
+            // if (inventory == null)
+            // {
+            //     Debug.LogWarning("BunkerHatch: InventoryManager not found on player. Interaction may fail.", this);
+            // }
 
-            inputManager = player.GetComponent<InputController>();
+            inputManager = player.GetComponent<PlayerInputCont>();
             if (inputManager == null)
             {
                 Debug.LogWarning("BunkerHatch: InputManager not found on player. Interaction may fail.", this);
@@ -123,11 +123,11 @@ namespace Player.Interact
                 Debug.LogWarning("BunkerHatch: Cannot function without a player reference.", this);
                 return false;
             }
-            if (inventory == null)
-            {
-                Debug.LogWarning("BunkerHatch: Cannot function without an InventoryManager.", this);
-                return false;
-            }
+            // if (inventory == null)
+            // {
+            //     Debug.LogWarning("BunkerHatch: Cannot function without an InventoryManager.", this);
+            //     return false;
+            // }
             if (inputManager == null)
             {
                 Debug.LogWarning("BunkerHatch: Cannot function without an InputManager.", this);

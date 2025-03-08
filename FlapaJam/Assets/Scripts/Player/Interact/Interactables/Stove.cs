@@ -1,4 +1,4 @@
-﻿using Core;
+﻿/*using Core;
 using UnityEngine;
 using Player; // Add this to access TaskManager
 
@@ -135,4 +135,4 @@ namespace Player.Interact
         public float GetCookProgress() => _cookTimer;
         public float GetCookDuration() => _cookTime;
     }
-}
+}*/

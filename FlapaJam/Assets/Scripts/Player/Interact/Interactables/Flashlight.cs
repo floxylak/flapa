@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿/*using UnityEngine;
 using System.Collections;
 using Core;
 using TMPro; // For TextMeshPro
@@ -255,4 +255,4 @@ namespace Player.Interact
             Gizmos.DrawWireSphere(transform.position, interactionDistance);
         }
     }
-}
+}*/

@@ -1,4 +1,4 @@
-﻿using Core;
+﻿/*using Core;
 using UnityEngine;
 
 namespace Player.Interact
@@ -82,7 +82,7 @@ namespace Player.Interact
             {
                 Debug.LogWarning("Desk: GameManager not found in scene!", this);
             }
-        }*/
+        }#1#
 
         protected override void Interact()
         {
@@ -177,4 +177,4 @@ namespace Player.Interact
         public float GetCraftProgress() => craftTimer;
         public float GetCraftDuration() => craftHoldDuration;
     }
-}
+}*/

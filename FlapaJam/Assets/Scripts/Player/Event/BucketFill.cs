@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿/*using UnityEngine;
 using Player; // Add this to access TaskManager
 
 namespace Player.Interact
@@ -173,4 +173,4 @@ namespace Player.Interact
             initialFill = Mathf.Clamp(initialFill, 0f, maxCapacity);
         }
     }
-}
+}*/

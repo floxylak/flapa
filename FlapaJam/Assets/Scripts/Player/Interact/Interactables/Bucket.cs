@@ -1,4 +1,4 @@
-﻿using Core;
+﻿/*using Core;
 using UnityEngine;
 
 namespace Player.Interact
@@ -46,11 +46,11 @@ namespace Player.Interact
             }
         }
 
-        protected override void Interact()
-        {
-            if (!IsValidSetup()) return;
-            inventory.AddItem(gameObject); // returns true;
-        }
+        // protected override void Interact()
+        // {
+        //     if (!IsValidSetup()) return;
+        //     inventory.AddItem(gameObject); // returns true;
+        // }
         
 
         private bool IsValidSetup()
@@ -68,4 +68,4 @@ namespace Player.Interact
             return true;
         }
     }
-}
+}*/

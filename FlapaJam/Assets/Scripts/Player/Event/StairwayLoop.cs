@@ -1,4 +1,4 @@
-using UnityEngine;
+/*using UnityEngine;
 
 namespace Player.Interact
 {
@@ -177,4 +177,4 @@ namespace Player.Interact
         public int GetStairwayCount() => stairwayCounter;
         public int GetTriggerCount() => triggerCount;
     }
-}
+}*/

@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using UnityEngine;
 using System.Collections.Generic;
 using Random = UnityEngine.Random;
@@ -457,4 +457,4 @@ namespace Player
             if (safeRoomTrigger == null) Debug.LogWarning("SafeRoomTrigger not assigned in GameManager!", this);
         }
     }
-}
+}*/

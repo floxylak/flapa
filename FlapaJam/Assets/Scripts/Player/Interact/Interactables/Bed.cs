@@ -1,4 +1,4 @@
-﻿using Core;
+﻿/*using Core;
 using UnityEngine;
 
 namespace Player.Interact
@@ -91,4 +91,4 @@ namespace Player.Interact
             return true;
         }
     }
-}
+}*/

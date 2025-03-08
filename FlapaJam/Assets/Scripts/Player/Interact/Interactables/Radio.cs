@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿/*using UnityEngine;
 using System.Collections;
 using Core;
 
@@ -81,7 +81,7 @@ namespace Player.Interact
             {
                 Debug.LogWarning("Radio: TaskManager not found in scene!", this);
             }
-        }*/
+        }#1#
 
         protected override void Interact()
         {
@@ -235,4 +235,4 @@ namespace Player.Interact
         public bool IsPlaced() => isPlaced;
         public bool IsEnabled() => isEnabled;
     }
-}
+}*/
