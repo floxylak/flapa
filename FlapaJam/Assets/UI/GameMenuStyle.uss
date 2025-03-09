@@ -1,0 +1,16 @@
+#game-title {
+    font-size: 48px;
+    color: white;
+    text-align: center;
+    margin-top: 20px;
+}
+
+#new-game-btn, #options-btn {
+    font-size: 24px;
+    color: black;
+    background-color: white;
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}

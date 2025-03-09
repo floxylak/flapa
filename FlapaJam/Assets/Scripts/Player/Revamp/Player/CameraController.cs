@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 namespace Player
 {
@@ -9,9 +10,9 @@ namespace Player
 
         [SerializeField] private Transform cameraPos;
         [SerializeField] private Transform player;
-        
+
         private static Camera _mainCamera;
-        
+
         private float _shakeTimer;
         private bool _isShaking;
         private Vector3 _originalCameraPosition;
@@ -25,7 +26,6 @@ namespace Player
         private static float _shakeFrequency = 10f;
         private const float SensitivityRecoverySpeed = 2f;
 
-        // Singleton
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -38,11 +38,10 @@ namespace Player
             if (!player) player = transform;
             if (!cameraPos && Main) cameraPos = Main.transform.parent;
         }
-        
+
         [SerializeField] private float xSens = 0.2f;
         [SerializeField] private float ySens = 0.2f;
 
-        // Getters
         public static Transform Player => Instance?.player;
         public static Camera Main
         {
@@ -63,7 +62,6 @@ namespace Player
         public static float ShakeIntensity => _shakeIntensity;
         public static float ShakeFrequency => _shakeFrequency;
 
-        // Setters
         public static void SetShakeIntensity(float value) => _shakeIntensity = value;
         public static void SetShakeFrequency(float value) => _shakeFrequency = value;
 
@@ -73,8 +71,32 @@ namespace Player
             {
                 _originalCameraPosition = Main.transform.localPosition;
             }
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+
+            // Ensure cursor updates correctly on scene start
+            UpdateCursorState();
+        }
+
+        private void OnEnable()
+        {
+            SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+
+        private void OnDisable()
+        {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+        }
+
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            UpdateCursorState();
+        }
+
+        private void UpdateCursorState()
+        {
+            bool isMenuScene = SceneManager.GetActiveScene().name == "pridebunk";
+
+            Cursor.lockState = isMenuScene ? CursorLockMode.None : CursorLockMode.Locked;
+            Cursor.visible = isMenuScene;
         }
 
         private void Update()
@@ -106,7 +128,7 @@ namespace Player
             _xRotation = Mathf.Clamp(_xRotation - mouseY, -80f, 80f);
 
             Main.transform.localRotation = Quaternion.Euler(_xRotation, 0f, 0f);
-            player.Rotate(Vector3.up * mouseX); 
+            player.Rotate(Vector3.up * mouseX);
         }
 
         public void StartShake(float duration)
