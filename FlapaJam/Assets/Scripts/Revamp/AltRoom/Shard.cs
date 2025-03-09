@@ -2,11 +2,10 @@
 
 public class Shard : Pickup
 {
-    private Transform playerTransform; // Reference to player's transform
+    private Transform playerTransform;
 
     private void Start()
     {
-        // Assuming the player has a tag "Player", adjust as needed
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
             playerTransform = player.transform;
@@ -21,6 +20,9 @@ public class Shard : Pickup
         {
             RoomManager.Instance.OnShardInteracted(playerTransform.position);
             Debug.Log("Shard interacted at player position: " + playerTransform.position);
+
+            // Destroy
+            Destroy(gameObject);
         }
         else
         {

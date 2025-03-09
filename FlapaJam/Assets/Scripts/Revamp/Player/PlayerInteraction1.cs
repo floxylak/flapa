@@ -19,8 +19,7 @@ namespace Player
         private PickupSO _pickupInHand = null;
         private Interactable _currentInteractable;
         private bool _persistentInteracting = false;
-        private Interactable _persistentInteractable = null;
-        private bool _holdInteracting = false;
+        private Interactable _persistentInteractable = null; // Track persistent interactable
 
         // Getters
         public PickupSO PickupInHand => _pickupInHand;
@@ -43,37 +42,26 @@ namespace Player
         private void Update()
         {
             // Handle persistent interaction
-            if (_persistentInteracting && _persistentInteractable != null)
+            if (_persistentInteracting && _persistentInteractable is not null)
             {
                 if (Input.GetKeyUp(use) || !InteractableInPersistentRange())
                 {
-                    _persistentInteractable.Interact();
+                    _persistentInteractable.Interact(); // Stop interaction
                     _persistentInteracting = false;
                     if (_currentInteractable == _persistentInteractable)
                         _currentInteractable.NotLookingAt();
                     _persistentInteractable = null;
                 }
-                return; // Persistent has highest priority
-            }
-
-            // Handle hold interaction
-            if (_holdInteracting && _currentInteractable != null && IsHold())
-            {
-                if (Input.GetKey(use))
-                {
-                    _currentInteractable.Interact();
-                }
-                if (Input.GetKeyUp(use))
-                {
-                    _holdInteracting = false;
-                }
-                return; // Hold has priority over click
             }
 
             Interaction();
-
+    
             if (Input.GetKeyDown(drop) && BusyHand)
                 Drop();
+    
+            if (BusyHand && holdPoint.GetChild(0).GetComponent<Useable>() != null)
+                if (Input.GetKeyDown(use))
+                    holdPoint.GetChild(0).GetComponent<Useable>().Interact();
         }
 
         private void OnDrawGizmos()
@@ -98,6 +86,7 @@ namespace Player
             rb.isKinematic = false;
             rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
             rb.AddForce(_camera.transform.forward * 150, ForceMode.Impulse);
+            // rb.linearVelocity = _camera.transform.forward * 1f;
             Destroy(rb, 3f);
     
             SetPickUpInHand(null);
@@ -112,71 +101,45 @@ namespace Player
                 _currentInteractable = null;
         }
 
-        private void Interaction()
+    private void Interaction()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(
+                _camera.transform.position, _camera.transform.forward,
+                out hit, interactDistance,
+                interactMask, QueryTriggerInteraction.Collide))
         {
-            RaycastHit hit;
-            if (Physics.Raycast(
-                    _camera.transform.position, _camera.transform.forward,
-                    out hit, interactDistance,
-                    interactMask, QueryTriggerInteraction.Collide))
+            var interactable = hit.transform.GetComponent<Interactable>() ??
+                             hit.transform.GetComponentInParent<Interactable>();
+            
+            if (interactable != null)
             {
-                var interactable = hit.transform.GetComponent<Interactable>() ??
-                                 hit.transform.GetComponentInParent<Interactable>();
-                
-                if (interactable != null)
+                if (_currentInteractable != interactable)
                 {
-                    if (_currentInteractable != interactable)
-                    {
-                        RemoveCurrentInteractable();
-                        _currentInteractable = interactable;
-                        _currentInteractable.LookingAt();
-                    }
+                    RemoveCurrentInteractable();
+                    _currentInteractable = interactable;
+                    _currentInteractable.LookingAt();
+                }
 
-                    // Persistent interaction (highest priority)
-                    if (IsPersistent() && !_persistentInteracting && !_holdInteracting)
+                // Special handling for Shard
+                if (interactable is Shard shard)
+                {
+                    if (Input.GetKeyDown(interact) || (IsClick() && Input.GetKeyDown(use)))
                     {
-                        if (Input.GetKeyDown(use))
-                        {
-                            _currentInteractable.Interact();
-                            _persistentInteracting = true;
-                            _persistentInteractable = _currentInteractable;
-                        }
-                    }
-                    // Hold interaction (medium priority)
-                    else if (IsHold() && !_persistentInteracting && !_holdInteracting)
-                    {
-                        if (Input.GetKeyDown(use))
-                        {
-                            _currentInteractable.Interact();
-                            _holdInteracting = true;
-                        }
-                    }
-                    // Click interaction (lowest priority)
-                    else if (IsClick() && !_persistentInteracting && !_holdInteracting)
-                    {
-                        if (interactable is Pickup pickup && Input.GetKeyDown(interact) && !BusyHand)
-                        {
-                            SetPickUpInHand(pickup.SO);
-                            Instantiate(pickup.SO.PickupObject, holdPoint);
-                            Destroy(hit.transform.gameObject);
-                            return;
-                        }
-                        else if (Input.GetKeyDown(use))
-                        {
-                            if (BusyHand && holdPoint.childCount > 0 && holdPoint.GetChild(0).GetComponent<Useable>() != null)
-                            {
-                                holdPoint.GetChild(0).GetComponent<Useable>().Interact();
-                            }
-                            else if (!BusyHand)
-                            {
-                                _currentInteractable.Interact();
-                            }
-                        }
+                        shard.Interact(); // Call Shard's Interact method
+                        return; // Exit early to avoid pickup logic
                     }
                 }
-                else if (_currentInteractable != null)
+                // Existing pickup logic (only for non-Shard Pickups)
+                else if (IsClick() && interactable is Pickup pickup)
                 {
-                    HadInteractableNowDont();
+                    if (Input.GetKeyDown(interact) && !BusyHand)
+                    {
+                        SetPickUpInHand(pickup.SO);
+                        Instantiate(pickup.SO.PickupObject, holdPoint);
+                        Destroy(hit.transform.gameObject);
+                        return;
+                    }
                 }
             }
             else if (_currentInteractable != null)
@@ -184,6 +147,40 @@ namespace Player
                 HadInteractableNowDont();
             }
         }
+        else if (_currentInteractable != null)
+        {
+            HadInteractableNowDont();
+        }
+
+        if (_currentInteractable != null)
+        {
+            if (IsClick())
+            {
+                if (Input.GetKeyDown(use) && !BusyHand)
+                {
+                    _currentInteractable.Interact();
+                }
+            }
+            
+            if (IsHold())
+            {
+                if (Input.GetKey(use))
+                {
+                    _currentInteractable.Interact();
+                }
+            }
+
+            if (IsPersistent() && !_persistentInteracting)
+            {
+                if (Input.GetKeyDown(use))
+                {
+                    _currentInteractable.Interact();
+                    _persistentInteracting = true;
+                    _persistentInteractable = _currentInteractable;
+                }
+            }
+        }
+    }
         
         private void HadInteractableNowDont()
         {

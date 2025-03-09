@@ -3,7 +3,7 @@
 public class Pickup : Useable
 {
     public PickupSO SO;
-    public AudioSource thud;
+    // public AudioSource thud;
     public Rigidbody rb;
     
     private void OnCollisionEnter(Collision collision)

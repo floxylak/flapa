@@ -4,8 +4,8 @@ using UnityEngine.Events;
 
 public class Door : Interactable
 {
-    private bool _draggingDoor; // True when player intends to drag (mouse down)
-    private bool _isActuallyDragging; // True when door is physically moving
+    private bool _draggingDoor;
+    private bool _isActuallyDragging;
     
     public AudioSource source;
     public AudioClip openSound;
@@ -50,6 +50,12 @@ public class Door : Interactable
             pivotPoint = transform;
             Debug.LogWarning("PivotPoint not assigned, using transform instead");
         }
+
+        // Initial lock state for specialItem doors
+        if (transform.CompareTag("specialItem"))
+        {
+            isLocked = !RoomManager.Instance.HasShardBeenPickedUp;
+        }
     }
 
     private void Start()
@@ -66,7 +72,7 @@ public class Door : Interactable
         {
             if (isLocked)
             {
-                ReleaseObject(); // Stop dragging if locked mid-operation
+                ReleaseObject();
                 _draggingDoor = false;
                 _isActuallyDragging = false;
             }
@@ -84,10 +90,24 @@ public class Door : Interactable
 
     public override void Interact()
     {
-        if (!_draggingDoor)
+        // Handle different door types
+        if (transform.CompareTag("specialItem"))
         {
-            RoomManager.Instance.OnDoorInteracted(this);
+            isLocked = !RoomManager.Instance.HasShardBeenPickedUp;
+            if (isLocked)
+            {
+                Debug.Log("Door is locked. Requires shard to open.");
+                return;
+            }
         }
+        else if (transform.CompareTag("SafeDoor"))
+        {
+            if (!_draggingDoor)
+            {
+                RoomManager.Instance.OnDoorInteracted(this);
+            }
+        }
+        // Regular "Door" tag will proceed normally without additional checks
 
         base.Interact();
         _draggingDoor = !_draggingDoor;

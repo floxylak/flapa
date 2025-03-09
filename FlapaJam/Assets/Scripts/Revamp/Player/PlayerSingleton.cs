@@ -14,7 +14,28 @@ namespace Player
         public PlayerCamera cam;
         public PlayerInteraction1 interact;
         public PlayerInputCont input;
+        
+        private GameObject currentHeldItem; // Tracks the item being held
 
+        // Method to set the held item (called by PlayerSingleton)
+        public void SetHeldItem(GameObject item)
+        {
+            currentHeldItem = item;
+            // Add logic here, e.g., update UI, play pickup animation, etc.
+            Debug.Log($"Player is now holding: {item.name}");
+        }
+
+        // Method to clear the held item (called by PlayerSingleton)
+        public void ClearHeldItem()
+        {
+            currentHeldItem = null;
+            // Add logic here, e.g., reset UI, stop holding animation, etc.
+            Debug.Log("Player's hand is now empty.");
+        }
+
+        // Optional: Property to check if an item is held
+        public bool IsHoldingItem => currentHeldItem != null;
+        
         private void Awake()
         {
             if (instance == null)

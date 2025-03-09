@@ -1483,13 +1483,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 677475365233739146}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0.03223356, y: 0.000049837556, z: -7.7222905}
   m_LocalScale: {x: 15.444234, y: 0.8915001, z: 0.0644766}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3354774911732408188}
-  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
 --- !u!1 &782999813873775798
 GameObject:
   m_ObjectHideFlags: 0
@@ -2074,13 +2074,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 903828933912813233}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
   m_LocalPosition: {x: -0.032235764, y: 0.00005017241, z: -7.7221527}
   m_LocalScale: {x: 15.444248, y: 0.8915001, z: 0.064476594}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3354774911732408188}
-  m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!1 &954185848910659500
 GameObject:
   m_ObjectHideFlags: 0
@@ -7395,12 +7395,7 @@ MonoBehaviour:
   doors:
   - {fileID: 7803169872508281787}
   - {fileID: 3139175111139872179}
-  anomalies: []
-  activeAnomaly: {fileID: 0}
-  tasks: []
-  activeTask: {fileID: 0}
   playerInside: 0
-  spawningDoor: {fileID: 0}
 --- !u!65 &7721329216495283021
 BoxCollider:
   m_ObjectHideFlags: 0

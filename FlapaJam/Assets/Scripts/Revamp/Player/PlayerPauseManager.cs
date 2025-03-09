@@ -43,6 +43,7 @@ public class PlayerPauseManager : MonoBehaviour
             Player.PlayerSingleton.instance.movement.enabled = true;
             Player.PlayerSingleton.instance.cam.enabled = true;
             Player.PlayerSingleton.instance.input.enabled = true;
+            Player.PlayerSingleton.instance.interact.enabled = true;
         }
 
         // Lock cursor back when resuming gameplay
