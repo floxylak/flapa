@@ -2,15 +2,29 @@
 
 public class Shard : Pickup
 {
-    public AudioSource audioSource;
-    public AudioClip flickerSound;
-    public ParticleSystem flickerEffect;
+    private Transform playerTransform; // Reference to player's transform
+
+    private void Start()
+    {
+        // Assuming the player has a tag "Player", adjust as needed
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
+            playerTransform = player.transform;
+        else
+            Debug.LogError("Player not found for Shard!");
+    }
 
     public override void Interact()
     {
         base.Interact();
-        RoomManager.Instance.OnShardInteracted();
-        audioSource.PlayOneShot(flickerSound);
-        flickerEffect.Play();
+        if (playerTransform != null)
+        {
+            RoomManager.Instance.OnShardInteracted(playerTransform.position);
+            Debug.Log("Shard interacted at player position: " + playerTransform.position);
+        }
+        else
+        {
+            Debug.LogWarning("Shard cannot find player position!");
+        }
     }
 }

@@ -5,13 +5,17 @@ using System.Linq;
 public class RoomManager : MonoBehaviour
 {
     public static RoomManager Instance { get; private set; }
-    
-    [SerializeField] private GameObject roomPrefab;
+
+    [SerializeField] private List<GameObject> stagePrefabs;
+    [SerializeField] private GameObject hallwayPrefab;
     private Room currentRoom;
     private Room previousRoom;
     private Door previousSpawningDoor;
     private HashSet<Vector3> occupiedPositions;
     private HashSet<Door> doorsThatSpawned;
+    private int currentStage = 0;
+    private bool usedShardInCurrentRoom = false;
+    private bool isNextRoomHallway = false;
 
     private void Awake()
     {
@@ -31,21 +35,32 @@ public class RoomManager : MonoBehaviour
 
     private void Start()
     {
+        if (stagePrefabs == null || stagePrefabs.Count < 5)
+        {
+            Debug.LogError("Stage prefabs list must contain at least 5 stages!");
+            return;
+        }
         SpawnRoom(null, new Vector3(20f, 0.003f, -32f), Quaternion.identity);
     }
 
     public void SpawnRoom(Door sourceDoor, Vector3 position, Quaternion rotation)
     {
-        Vector3 roundedPosition = new Vector3(
-            Mathf.Round(position.x * 1000f) / 1000f,
-            Mathf.Round(position.y * 1000f) / 1000f,
-            Mathf.Round(position.z * 1000f) / 1000f
-        );
-
+        Vector3 roundedPosition = RoundPosition(position);
         if (occupiedPositions.Contains(roundedPosition) || IsRoomAtPosition(roundedPosition))
             return;
 
-        GameObject newRoomObj = Instantiate(roomPrefab, position, rotation);
+        GameObject newRoomObj;
+        if (isNextRoomHallway)
+        {
+            newRoomObj = Instantiate(hallwayPrefab, position, rotation);
+            isNextRoomHallway = false;
+            currentStage = 0;
+        }
+        else
+        {
+            newRoomObj = Instantiate(stagePrefabs[currentStage], position, rotation);
+        }
+
         Room newRoom = newRoomObj.GetComponent<Room>();
         if (newRoom == null)
         {
@@ -61,7 +76,6 @@ public class RoomManager : MonoBehaviour
                 Destroy(newRoomObj);
                 return;
             }
-
             newRoomObj.transform.position = pivot.position;
             float newYRotation = (pivot.rotation.eulerAngles.y + 180f) % 360f;
             newRoomObj.transform.rotation = Quaternion.Euler(0f, newYRotation, 0f);
@@ -69,99 +83,117 @@ public class RoomManager : MonoBehaviour
         }
 
         occupiedPositions.Add(roundedPosition);
-        previousRoom = currentRoom; // Move current to previous
-        currentRoom = newRoom;      // Set new room as current
+        previousRoom = currentRoom;
+        currentRoom = newRoom;
         previousSpawningDoor = sourceDoor;
 
+        currentRoom.Initialize(currentStage + 1);
+        Debug.Log($"Spawned room: Stage {currentStage + 1}, Has Anomaly: {currentRoom.HasAnomaly()}");
+
         if (previousRoom != null)
-        {
-            LockAllDoors(currentRoom); // Lock doors in the new current room
-        }
+            LockAllDoors(currentRoom);
     }
 
-    public void CheckDestroyPreviousRoom(Room newRoom)
+    public void OnShardInteracted(Vector3 playerPosition)
     {
-        if (previousRoom != null && previousRoom != newRoom && IsDoorClosed(previousSpawningDoor))
+        // Find the room the player is in
+        Room playerRoom = GetRoomAtPosition(playerPosition);
+        if (playerRoom == null)
         {
-            Vector3 previousPosition = new Vector3(
-                Mathf.Round(previousRoom.transform.position.x * 1000f) / 1000f,
-                Mathf.Round(previousRoom.transform.position.y * 1000f) / 1000f,
-                Mathf.Round(previousRoom.transform.position.z * 1000f) / 1000f
-            );
+            Debug.Log("Shard used outside of any room - no effect.");
+            return;
+        }
 
-            if (previousSpawningDoor != null)
-                ReparentWallToNewRoom(previousSpawningDoor, newRoom);
+        if (playerRoom != currentRoom)
+        {
+            Debug.Log("Shard used in a non-current room - no effect.");
+            return;
+        }
 
-            occupiedPositions.Remove(previousPosition);
-            foreach (Door door in previousRoom.GetDoors())
-                doorsThatSpawned.Remove(door);
-            //doorsThatSpawned.Remove(previousRoom.mainDoor);
-            doorsThatSpawned.Remove(previousSpawningDoor);
-            
-            Destroy(previousRoom.gameObject);
-            previousRoom = null;
-            previousSpawningDoor = null;
+        usedShardInCurrentRoom = true;
+        bool hasAnomaly = currentRoom.HasAnomaly();
+        Debug.Log($"Shard used in Stage {currentStage + 1}. Has Anomaly: {hasAnomaly}");
+
+        if (hasAnomaly)
+            currentStage = Mathf.Min(currentStage + 1, stagePrefabs.Count - 1); // Next stage
+        else
+            currentStage = 0; // Reset to Stage1
+    }
+
+    public void OnDoorInteracted(Door interactedDoor)
+    {
+        if (interactedDoor == null || doorsThatSpawned.Contains(interactedDoor))
+            return;
+
+        if (previousRoom != null && previousRoom.GetDoors().Contains(interactedDoor))
+        {
+            if (interactedDoor.isLocked)
+                return;
 
             if (currentRoom != null)
             {
-                UnlockAllDoors(currentRoom);
+                Vector3 currentPosition = RoundPosition(currentRoom.transform.position);
+                occupiedPositions.Remove(currentPosition);
+                foreach (Door door in currentRoom.GetDoors())
+                    doorsThatSpawned.Remove(door);
+                doorsThatSpawned.Remove(previousSpawningDoor);
+                Destroy(currentRoom.gameObject);
             }
-        }
-    }
 
-    private void LockAllDoors(Room room)
-    {
-        Transform doorsContainer = room.transform.Find("Doors");
-        if (doorsContainer != null)
-        {
-            Door[] doors = doorsContainer.GetComponentsInChildren<Door>();
-            foreach (Door door in doors)
+            currentRoom = previousRoom;
+            previousRoom = null;
+            previousSpawningDoor = null;
+            UnlockAllDoors(currentRoom);
+
+            Transform pivot = interactedDoor.transform.Find("Pivot");
+            if (pivot != null)
             {
-                door.isLocked = true;
+                SpawnRoom(interactedDoor, pivot.position, Quaternion.identity);
+                doorsThatSpawned.Add(interactedDoor);
             }
+            return;
         }
-    }
 
-    private void UnlockAllDoors(Room room)
-    {
-        Transform doorsContainer = room.transform.Find("Doors");
-        if (doorsContainer != null)
-        {
-            Door[] doors = doorsContainer.GetComponentsInChildren<Door>();
-            foreach (Door door in doors)
-            {
-                door.isLocked = false;
-            }
-        }
-    }
-
-    private void ReparentWallToNewRoom(Door door, Room newRoom)
-    {
-        if (door == null || newRoom == null)
+        if (interactedDoor.isLocked || previousRoom != null)
             return;
 
-        Transform wall = door.transform.parent;
-        if (wall != null)
+        if (currentRoom != null && !usedShardInCurrentRoom && currentRoom.HasAnomaly())
         {
-            wall.SetParent(newRoom.transform, true);
+            isNextRoomHallway = true;
+        }
+        else if (!usedShardInCurrentRoom && !currentRoom.HasAnomaly())
+        {
+            currentStage = Mathf.Min(currentStage + 1, stagePrefabs.Count - 1);
+        }
 
-            Transform oldPivot = door.transform.Find("Pivot");
-            Transform oldArchPivot = door.transform.Find("ArchPivot");
-
-            if (oldPivot != null && oldArchPivot != null)
-            {
-                oldPivot.name = "ArchPivot";
-                oldArchPivot.name = "Pivot";
-            }
+        usedShardInCurrentRoom = false;
+        Transform newPivot = interactedDoor.transform.Find("Pivot");
+        if (newPivot != null)
+        {
+            SpawnRoom(interactedDoor, newPivot.position, Quaternion.identity);
+            doorsThatSpawned.Add(interactedDoor);
         }
     }
 
-    private bool IsDoorClosed(Door door)
+    private Room GetRoomAtPosition(Vector3 position)
     {
-        if (door == null)
-            return false;
+        Collider[] hitColliders = Physics.OverlapSphere(position, 0.1f);
+        foreach (var collider in hitColliders)
+        {
+            Room room = collider.GetComponent<Room>();
+            if (room != null && room.playerInside)
+                return room;
+        }
+        return null;
+    }
 
-        return door.state == Door.DoorState.Closed;
+    private Vector3 RoundPosition(Vector3 position)
+    {
+        return new Vector3(
+            Mathf.Round(position.x * 1000f) / 1000f,
+            Mathf.Round(position.y * 1000f) / 1000f,
+            Mathf.Round(position.z * 1000f) / 1000f
+        );
     }
 
     private bool IsRoomAtPosition(Vector3 position)
@@ -175,59 +207,47 @@ public class RoomManager : MonoBehaviour
         return false;
     }
 
-    public void OnDoorInteracted(Door interactedDoor)
+    private void LockAllDoors(Room room)
     {
-        if (interactedDoor == null || doorsThatSpawned.Contains(interactedDoor))
-            return;
-
-        // Check if the interacted door belongs to the previous room
-        if (previousRoom != null && previousRoom.GetDoors().Contains(interactedDoor))
+        Transform doorsContainer = room.transform.Find("Doors");
+        if (doorsContainer != null)
         {
-            if (interactedDoor.isLocked)
-                return;
-
-            // Destroy the current room
-            if (currentRoom != null)
-            {
-                Vector3 currentPosition = new Vector3(
-                    Mathf.Round(currentRoom.transform.position.x * 1000f) / 1000f,
-                    Mathf.Round(currentRoom.transform.position.y * 1000f) / 1000f,
-                    Mathf.Round(currentRoom.transform.position.z * 1000f) / 1000f
-                );
-                occupiedPositions.Remove(currentPosition);
-                foreach (Door door in currentRoom.GetDoors())
-                    doorsThatSpawned.Remove(door);
-                Destroy(currentRoom.gameObject);
-                
-                doorsThatSpawned.Remove(previousSpawningDoor);
-            }
-
-            // Reset state: previousRoom becomes currentRoom
-            currentRoom = previousRoom;
-            previousRoom = null; // Clear previousRoom since it’s now current
-            previousSpawningDoor = null; // Reset the spawning door
-            UnlockAllDoors(currentRoom); // Unlock doors in the new current room (old previousRoom)
-
-            // Spawn a new room at the interacted door
-            Transform pivot = interactedDoor.transform.Find("Pivot");
-            if (pivot != null)
-            {
-                SpawnRoom(interactedDoor, pivot.position, Quaternion.identity);
-                doorsThatSpawned.Add(interactedDoor);
-            }
-
-            return; // Exit after handling previous room door interaction
+            Door[] doors = doorsContainer.GetComponentsInChildren<Door>();
+            foreach (Door door in doors)
+                door.isLocked = true;
         }
+    }
 
-        // Original behavior for spawning from current room
-        if (interactedDoor.isLocked || previousRoom != null)
-            return;
-
-        Transform newPivot = interactedDoor.transform.Find("Pivot");
-        if (newPivot != null)
+    private void UnlockAllDoors(Room room)
+    {
+        Transform doorsContainer = room.transform.Find("Doors");
+        if (doorsContainer != null)
         {
-            SpawnRoom(interactedDoor, newPivot.position, Quaternion.identity);
-            doorsThatSpawned.Add(interactedDoor);
+            Door[] doors = doorsContainer.GetComponentsInChildren<Door>();
+            foreach (Door door in doors)
+                door.isLocked = false;
         }
+    }
+
+    private void ReparentWallToNewRoom(Door door, Room newRoom)
+    {
+        if (door == null || newRoom == null) return;
+        Transform wall = door.transform.parent;
+        if (wall != null)
+        {
+            wall.SetParent(newRoom.transform, true);
+            Transform oldPivot = door.transform.Find("Pivot");
+            Transform oldArchPivot = door.transform.Find("ArchPivot");
+            if (oldPivot != null && oldArchPivot != null)
+            {
+                oldPivot.name = "ArchPivot";
+                oldArchPivot.name = "Pivot";
+            }
+        }
+    }
+
+    private bool IsDoorClosed(Door door)
+    {
+        return door != null && door.state == Door.DoorState.Closed;
     }
 }
