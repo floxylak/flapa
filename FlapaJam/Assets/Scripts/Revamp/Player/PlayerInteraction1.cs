@@ -78,15 +78,17 @@ namespace Player
             Destroy(equipModel.gameObject);
 
             var pickUp = Instantiate(PickupInHand.PickupObject, dropPoint.position, 
-                quaternion.Euler(0, _camera.transform.rotation.y, _camera.transform.rotation.z));
-            
+                Quaternion.Euler(0, _camera.transform.rotation.y, 0));
+    
             var rb = pickUp.AddComponent<Rigidbody>();
             rb.mass = 60f;
             rb.useGravity = true;
             rb.isKinematic = false;
+            rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
             rb.AddForce(_camera.transform.forward * 150, ForceMode.Impulse);
+            // rb.linearVelocity = _camera.transform.forward * 1f;
             Destroy(rb, 3f);
-            
+    
             SetPickUpInHand(null);
         }
 
