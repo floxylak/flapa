@@ -46,7 +46,7 @@ public class Interactable : MonoBehaviour
             case InteractType.Persistent:
                 // Toggle persistent state (e.g., start/stop dragging)
                 isActive = !isActive;
-                Debug.Log($"{gameObject.name} persistent interaction, active: {isActive}");
+                // Debug.Log($"{gameObject.name} persistent interaction, active: {isActive}");
                 break;
         }
     }

@@ -23,7 +23,7 @@ public class PlayerCamera : MonoBehaviour
     [SerializeField] private float maxLeanAngle = 30f;
     [SerializeField] private float leanSmoothTime = 0.1f;
     [SerializeField] private float leanCheckRadius = 0.1f;
-    [SerializeField] private float maxVerticalAngleForLean = 60f; // New: Threshold for disabling lean
+    [SerializeField] private float maxVerticalAngleForLean = 30f; // New: Threshold for disabling lean
 
     [Header("Rotation Smoothing")]
     [SerializeField] private float rotationSmoothTime = 0.1f;

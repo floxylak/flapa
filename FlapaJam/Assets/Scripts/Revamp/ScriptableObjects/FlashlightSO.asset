@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7667be9a7344ea68a0aab5b57eecd9e, type: 3}
   m_Name: FlashlightSO
   m_EditorClassIdentifier: 
-  PickupObject: {fileID: 9051185547243367803, guid: d4d851072823ca8428d7807e1079bf76, type: 3}
-  EquipModel: {fileID: 9051185547243367803, guid: d4d851072823ca8428d7807e1079bf76, type: 3}
+  PickupObject: {fileID: 4599675869850988113, guid: d4d851072823ca8428d7807e1079bf76, type: 3}
+  EquipModel: {fileID: 4599675869850988113, guid: d4d851072823ca8428d7807e1079bf76, type: 3}
