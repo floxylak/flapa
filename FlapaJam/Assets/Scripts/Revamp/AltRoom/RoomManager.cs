@@ -95,7 +95,7 @@ public class RoomManager : MonoBehaviour
             occupiedPositions.Remove(previousPosition);
             foreach (Door door in previousRoom.GetDoors())
                 doorsThatSpawned.Remove(door);
-            doorsThatSpawned.Remove(previousRoom.mainDoor);
+            //doorsThatSpawned.Remove(previousRoom.mainDoor);
             doorsThatSpawned.Remove(previousSpawningDoor);
             
             Destroy(previousRoom.gameObject);

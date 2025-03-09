@@ -4,41 +4,32 @@ using Random = UnityEngine.Random;
 public class Room : MonoBehaviour
 {
     public Door[] doors;
-    
-    private int stage;
-    private bool hasAnomaly;
-    
-    public Anomaly[] anomalies;
-    public Anomaly activeAnomaly;
-    
-    public Task[] tasks;
-    public Task activeTask;
-    
-    private RoomManager roomManager;
+    public bool playerInside;
+    private Door mainDoor;
     
     public bool isAnomaly => activeAnomaly != null;
-    public bool isTask => activeTask != null;
     
-
+    private Anomaly activeAnomaly;
+    private int stage;
+    private bool hasAnomaly;
     private bool hasPlayerEntered;
-    public bool playerInside;
-    public Door spawningDoor;
+    
+    private RoomManager roomManager;   
     
     public void Initialize(int currentStage)
     {
         stage = currentStage;
-        float anomalyChance = 0.5f; // 50% chance, adjust as needed
-        hasAnomaly = Random.value < anomalyChance;
-        if (hasAnomaly)
-        {
-            anomaly = gameObject.AddComponent<Anomaly>();
-            anomaly.Initialize(); // Define anomaly type in Anomaly.cs
-        }
+        hasAnomaly = Random.value < 0.5f;
+
+        if (!hasAnomaly) return;
+        
+        activeAnomaly = gameObject.AddComponent<Anomaly>();
+        activeAnomaly.Initialize();
     }
     
-    public void SetSpawningDoor(Door door)
+    public bool HasAnomaly()
     {
-        spawningDoor = door;
+        return hasAnomaly;
     }
 
     private void Start()
@@ -57,6 +48,11 @@ public class Room : MonoBehaviour
                 collider.isTrigger = true;
             }
         }
+    }
+    
+    public void SetSpawningDoor(Door door)
+    {
+        mainDoor = door;
     }
 
     private void InitializeRoom()

@@ -84,15 +84,16 @@ public class Door : Interactable
 
     public override void Interact()
     {
-        RoomManager.Instance.OnDoorInteracted(this);
-        base.Interact();
+        if (!_draggingDoor)
+        {
+            RoomManager.Instance.OnDoorInteracted(this);
+        }
 
-        // Toggle the intention to drag
+        base.Interact();
         _draggingDoor = !_draggingDoor;
 
         if (_draggingDoor)
         {
-            // Mouse down: Attempt to start dragging
             if (!isLocked)
             {
                 StartDragging();
@@ -102,7 +103,6 @@ public class Door : Interactable
         }
         else
         {
-            // Mouse up: Release the door
             if (_isActuallyDragging)
             {
                 ReleaseObject();

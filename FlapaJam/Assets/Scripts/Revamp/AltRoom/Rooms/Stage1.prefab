@@ -61,6 +61,21 @@ MonoBehaviour:
   openSound: {fileID: 0}
   closedSound: {fileID: 0}
   isLocked: 0
+  OnOpen:
+    m_PersistentCalls:
+      m_Calls: []
+  OnClose:
+    m_PersistentCalls:
+      m_Calls: []
+  maxAngle: 90
+  rotationSpeed: 500
+  closeAngleThreshold: 2
+  snapAngleThreshold: 20
+  closeAnimationSpeed: 500
+  pivotPoint: {fileID: 0}
+  state: 1
+  currentAngle: 0
+  drawGizmos: 0
 --- !u!54 &802770645537895458
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -623,7 +638,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 2561
+  m_VersionIndex: 2567
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -1324,6 +1339,21 @@ MonoBehaviour:
   openSound: {fileID: 0}
   closedSound: {fileID: 0}
   isLocked: 0
+  OnOpen:
+    m_PersistentCalls:
+      m_Calls: []
+  OnClose:
+    m_PersistentCalls:
+      m_Calls: []
+  maxAngle: 90
+  rotationSpeed: 500
+  closeAngleThreshold: 2
+  snapAngleThreshold: 20
+  closeAnimationSpeed: 500
+  pivotPoint: {fileID: 0}
+  state: 1
+  currentAngle: 0
+  drawGizmos: 0
 --- !u!54 &3596534436401291602
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1449,7 +1479,7 @@ Light:
   m_Enabled: 1
   serializedVersion: 11
   m_Type: 2
-  m_Color: {r: 0.7735849, g: 0.6750227, b: 0.5239943, a: 1}
+  m_Color: {r: 0.35646132, g: 0.46420547, b: 0.5849056, a: 1}
   m_Intensity: 2.12
   m_Range: 4.18
   m_SpotAngle: 30
@@ -1718,7 +1748,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 2561
+  m_VersionIndex: 2567
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -1834,7 +1864,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7582915587406671637}
   m_Layer: 0
-  m_Name: Objects
+  m_Name: Object
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2143,7 +2173,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 2561
+  m_VersionIndex: 2567
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -2440,7 +2470,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 2561
+  m_VersionIndex: 2567
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -2877,7 +2907,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 2561
+  m_VersionIndex: 2567
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -3346,7 +3376,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 2561
+  m_VersionIndex: 2567
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -3680,7 +3710,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 2561
+  m_VersionIndex: 2567
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -4211,7 +4241,7 @@ GameObject:
   - component: {fileID: 4804926404427405605}
   - component: {fileID: 6031632776405292381}
   m_Layer: 0
-  m_Name: Room
+  m_Name: Stage1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4226,7 +4256,7 @@ Transform:
   m_GameObject: {fileID: 2936667459438957432}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 96.4, y: 0.003, z: -32}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4253,14 +4283,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d64d72f50df420e8dee01bda80dd7e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  doors:
+  - {fileID: 5704605668193257773}
+  - {fileID: 3354768793459988523}
   anomalies: []
   activeAnomaly: {fileID: 0}
   tasks: []
   activeTask: {fileID: 0}
-  mainDoor: {fileID: 0}
-  doors:
-  - {fileID: 5704605668193257773}
-  - {fileID: 3354768793459988523}
   playerInside: 0
   spawningDoor: {fileID: 0}
 --- !u!65 &6031632776405292381
@@ -4282,7 +4311,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 12.83071, y: 4.240296, z: 8.634263}
+  m_Size: {x: 11.2, y: 4.240296, z: 8.03}
   m_Center: {x: -0.0483017, y: 1.99, z: -4.467499}
 --- !u!1 &3058076194376604011
 GameObject:
@@ -4475,7 +4504,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 2561
+  m_VersionIndex: 2567
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -5401,7 +5430,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 2561
+  m_VersionIndex: 2567
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -5691,7 +5720,7 @@ Light:
   m_Enabled: 1
   serializedVersion: 11
   m_Type: 2
-  m_Color: {r: 0.7735849, g: 0.6750227, b: 0.5239943, a: 1}
+  m_Color: {r: 0.49386254, g: 0.6176569, b: 0.7132075, a: 1}
   m_Intensity: 2.12
   m_Range: 4.18
   m_SpotAngle: 30
@@ -7897,7 +7926,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 2561
+  m_VersionIndex: 2567
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -8647,7 +8676,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 2561
+  m_VersionIndex: 2567
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -8796,7 +8825,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1518148550554583487}
   m_Layer: 0
-  m_Name: Walls
+  m_Name: Wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10023,7 +10052,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 2561
+  m_VersionIndex: 2567
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
