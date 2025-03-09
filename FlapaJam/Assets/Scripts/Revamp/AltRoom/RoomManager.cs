@@ -228,10 +228,7 @@ public class RoomManager : MonoBehaviour
 
     public void OnShardInteracted(Vector3 playerPosition)
     {
-        if (currentRoom != null && currentRoom.playerInside && !shardEverPickedUp)
-        {
-            shardEverPickedUp = true;
-        }
+        shardEverPickedUp = true;
     }
 
     public void SpawnRoom(Door sourceDoor, Vector3 position, Quaternion rotation, bool isHallway = false, bool isEndgame = false)

@@ -15,7 +15,7 @@ public class Shard : Pickup
 
     public override void Interact()
     {
-        base.Interact();
+        // base.Interact();
         if (playerTransform != null)
         {
             RoomManager.Instance.OnShardInteracted(playerTransform.position);

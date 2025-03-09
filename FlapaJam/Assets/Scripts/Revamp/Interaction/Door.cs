@@ -50,12 +50,6 @@ public class Door : Interactable
             pivotPoint = transform;
             Debug.LogWarning("PivotPoint not assigned, using transform instead");
         }
-
-        // Initial lock state for specialItem doors
-        if (transform.CompareTag("specialItem"))
-        {
-            isLocked = !RoomManager.Instance.HasShardBeenPickedUp;
-        }
     }
 
     private void Start()
@@ -64,6 +58,12 @@ public class Door : Interactable
         initialRotation = pivotPoint.rotation;
         accumulatedAngle = 0f;
         UpdateObjectState();
+        
+        // Initial lock state for specialItem doors
+        if (transform.CompareTag("specialItem"))
+        {
+            isLocked = !RoomManager.Instance.HasShardBeenPickedUp;
+        }
     }
 
     private void Update()

@@ -19625,10 +19625,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: Shard (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 3937162855747178447, guid: 49bc1219c2ae0e943bec5fc366312af5, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3937162855747178447, guid: 49bc1219c2ae0e943bec5fc366312af5, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1227266889}
   m_SourcePrefab: {fileID: 100100000, guid: 49bc1219c2ae0e943bec5fc366312af5, type: 3}
 --- !u!1 &902603943
 GameObject:
@@ -27978,6 +27985,33 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2e530677cb65dde4fa00953b8569beac, type: 3}
+--- !u!1 &1227266882 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3937162855747178447, guid: 49bc1219c2ae0e943bec5fc366312af5, type: 3}
+  m_PrefabInstance: {fileID: 894634474}
+  m_PrefabAsset: {fileID: 0}
+--- !u!64 &1227266889
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1227266882}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4493585093827132993, guid: 3336dbe5e59913249abd8cd1bec93f37, type: 3}
 --- !u!1 &1231515767
 GameObject:
   m_ObjectHideFlags: 0

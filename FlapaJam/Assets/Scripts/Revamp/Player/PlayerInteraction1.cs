@@ -126,8 +126,8 @@ namespace Player
                 {
                     if (Input.GetKeyDown(interact) || (IsClick() && Input.GetKeyDown(use)))
                     {
-                        shard.Interact(); // Call Shard's Interact method
-                        return; // Exit early to avoid pickup logic
+                        shard.Interact(); // Call Shard's Interact 
+                        return; // Exit early 
                     }
                 }
                 // Existing pickup logic (only for non-Shard Pickups)
