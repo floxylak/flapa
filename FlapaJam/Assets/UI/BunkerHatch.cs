@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using TMPro; // For TextMeshPro
+using TMPro;
 
 namespace Player.Interact
 {
@@ -8,15 +8,13 @@ namespace Player.Interact
     {
         [Header("References")]
         [SerializeField] private Transform player;
-        [SerializeField] private GameObject interactiveCanvas; // The Canvas for the UI
-        [SerializeField] private TMP_Text promptText; // TextMeshPro text for the prompt
+        [SerializeField] private GameObject interactiveCanvas;
+        [SerializeField] private TMP_Text promptText;
 
         [Header("Interaction Settings")]
-        [SerializeField] private string targetSceneName = "MAP BUNKER 2"; // Scene to load (update this to match your scene name)
-        [SerializeField] private float interactionDistance = 2f; // How close the player needs to be
-        [SerializeField] private KeyCode interactKey = KeyCode.E; // Key to interact
+        [SerializeField] private float interactionDistance = 2f;
+        [SerializeField] private KeyCode interactKey = KeyCode.E;
 
-        // private InventoryController inventory;
         private PlayerInputCont inputManager;
         private bool isPlayerInRange = false;
 
@@ -33,41 +31,34 @@ namespace Player.Interact
                     Camera.main.transform.parent.parent != null)
                 {
                     player = Camera.main.transform.parent.parent;
-                    Debug.Log("BunkerHatch: Player automatically assigned via camera hierarchy.");
+                    Debug.Log("BunkerHatch: Player automatically assigned.");
                 }
                 else
                 {
-                    Debug.LogError("BunkerHatch: Player reference could not be assigned. " +
-                                 "Ensure the camera has enough parent levels or assign manually in the Inspector.", this);
+                    Debug.LogError("BunkerHatch: Player reference could not be assigned!", this);
                     return;
                 }
             }
 
-            // inventory = player.GetComponent<InventoryController>();
-            // if (inventory == null)
-            // {
-            //     Debug.LogWarning("BunkerHatch: InventoryManager not found on player. Interaction may fail.", this);
-            // }
-
             inputManager = player.GetComponent<PlayerInputCont>();
             if (inputManager == null)
             {
-                Debug.LogWarning("BunkerHatch: InputManager not found on player. Interaction may fail.", this);
+                Debug.LogWarning("BunkerHatch: InputManager not found on player!", this);
             }
 
             if (interactiveCanvas == null)
             {
-                Debug.LogWarning("BunkerHatch: Interactive Canvas is not assigned in the Inspector!", this);
+                Debug.LogWarning("BunkerHatch: Interactive Canvas not assigned!", this);
             }
 
             if (promptText == null)
             {
-                Debug.LogWarning("BunkerHatch: Prompt Text is not assigned in the Inspector!", this);
+                Debug.LogWarning("BunkerHatch: Prompt Text not assigned!", this);
             }
 
             if (interactiveCanvas != null)
             {
-                interactiveCanvas.SetActive(false); // Start with UI hidden
+                interactiveCanvas.SetActive(false);
             }
         }
 
@@ -75,36 +66,21 @@ namespace Player.Interact
         {
             if (!IsValidSetup()) return;
 
-            // Check if player is in range
             float distance = Vector3.Distance(transform.position, player.position);
             isPlayerInRange = distance <= interactionDistance;
 
-            // Show/hide and update UI with detailed logging
             if (interactiveCanvas != null)
             {
                 interactiveCanvas.SetActive(isPlayerInRange);
-                Debug.Log($"BunkerHatch: Canvas active: {isPlayerInRange}, Distance: {distance}");
-
                 if (isPlayerInRange && promptText != null)
                 {
                     promptText.text = $"Press {interactKey} to enter bunker";
-                    Debug.Log("BunkerHatch: Updated prompt text to 'Press E to enter bunker'");
                 }
-                else if (isPlayerInRange && promptText == null)
-                {
-                    Debug.LogWarning("BunkerHatch: Prompt Text is null, UI won't display text!", this);
-                }
-            }
-            else
-            {
-                Debug.LogWarning("BunkerHatch: Interactive Canvas is null, UI won't display!", this);
             }
 
-            // Handle interaction if not held (simplified since bunker hatch isn�t held in inventory)
             if (isPlayerInRange && Input.GetKeyDown(interactKey))
             {
                 Interact();
-                Debug.Log("BunkerHatch: Attempting to enter bunker...");
             }
         }
 
@@ -112,31 +88,49 @@ namespace Player.Interact
         {
             if (!IsValidSetup()) return;
 
-            SceneManager.LoadScene(targetSceneName);
-            Debug.Log($"BunkerHatch: Loading scene: {targetSceneName}", this);
+            SceneManager.LoadScene(0); // Load pridebunk (Scene 0)
+            SceneManager.sceneLoaded += OnPrideSceneLoaded;
+            Debug.Log("BunkerHatch: Loading Scene 0 (pridebunk)");
+        }
+
+        private void OnPrideSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            if (scene.buildIndex != 0 || scene.name != "pridebunk")
+            {
+                Debug.LogError($"BunkerHatch: Expected 'pridebunk' (Scene 0), got '{scene.name}' (Index {scene.buildIndex})!");
+                SceneManager.sceneLoaded -= OnPrideSceneLoaded;
+                return;
+            }
+
+            // Find the player (persisted via DontDestroyOnLoad)
+            if (player == null) player = GameObject.FindWithTag("Player")?.transform;
+            if (player == null)
+            {
+                Debug.LogError("BunkerHatch: Player not found in pridebunk!");
+                return;
+            }
+
+            var playerCamera = GameObject.FindWithTag("PlayerCamera");
+            if (playerCamera != null)
+            {
+                player.transform.SetPositionAndRotation(playerCamera.transform.position, playerCamera.transform.rotation);
+                Debug.Log("BunkerHatch: Player moved to PlayerCamera position in pridebunk.");
+            }
+            else
+            {
+                Debug.LogError("BunkerHatch: 'PlayerCamera' not found in pridebunk!");
+            }
+
+            SceneManager.sceneLoaded -= OnPrideSceneLoaded;
         }
 
         private bool IsValidSetup()
         {
-            if (player == null)
-            {
-                Debug.LogWarning("BunkerHatch: Cannot function without a player reference.", this);
-                return false;
-            }
-            // if (inventory == null)
-            // {
-            //     Debug.LogWarning("BunkerHatch: Cannot function without an InventoryManager.", this);
-            //     return false;
-            // }
-            if (inputManager == null)
-            {
-                Debug.LogWarning("BunkerHatch: Cannot function without an InputManager.", this);
-                return false;
-            }
+            if (player == null || inputManager == null) return false;
             return true;
         }
 
-        void OnDrawGizmos()
+        private void OnDrawGizmos()
         {
             Gizmos.color = Color.green;
             Gizmos.DrawWireSphere(transform.position, interactionDistance);

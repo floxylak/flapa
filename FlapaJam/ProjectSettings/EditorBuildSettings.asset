@@ -6,11 +6,11 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/BunkerScene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
-  - enabled: 1
     path: Assets/Scenes/pridebunk.unity
     guid: 55174526cd151ad4991c19c80185c969
+  - enabled: 0
+    path: Assets/Scenes/BunkerScene.unity
+    guid: 99c9720ab356a0642a771bea13969a05
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: b9f594b3b05f94e459eb6504fbef6206, type: 3}
   m_UseUCBPForAssetBundles: 0

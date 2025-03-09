@@ -1,98 +1,125 @@
 using UnityEngine;
-using UnityEngine.SceneManagement; // For scene loading
-using Player; // Import the correct namespace for PlayerMovement 
+using UnityEngine.UIElements;
 
 public class MainMenu : MonoBehaviour
 {
-    public GameObject menuUI;  // Assign the GameMenuUI in the Inspector
-    public GameObject player;  // Assign the Player GameObject in the Inspector
+    [Header("UI Documents")]
+    public UIDocument uiDocument;         // Main menu UI Document
+    public VisualTreeAsset optionsMenuUXML; // Options Menu UXML
 
-    private PlayerCamera playerCamScript;
-    private PlayerMovement playerMovementScript;
+    [Header("Player References")]
+    public PlayerPauseManager pauseManager; // Reference to PlayerPauseManager
+    public GameObject playerCamera;      // Player's actual game camera
+    public GameObject menuCamera;        // Menu camera that shows the UI
 
-    private void Start()
+    private VisualElement root;
+    private VisualElement mainMenu;
+    private VisualElement optionsMenu;
+
+    private void OnEnable()
     {
-        if (player == null)
+        if (uiDocument == null)
         {
-            Debug.LogError("MainMenu: Player object is not assigned in the Inspector!");
+            Debug.LogError("MainMenu: UIDocument is not assigned!");
             return;
         }
 
-        // Get PlayerCamera and PlayerMovement scripts
-        playerCamScript = player.GetComponent<PlayerCamera>();
-        playerMovementScript = player.GetComponent<PlayerMovement>();
+        root = uiDocument.rootVisualElement;
+        if (root == null)
+        {
+            Debug.LogError("MainMenu: Root VisualElement is null!");
+            return;
+        }
 
-        if (playerCamScript != null)
-            playerCamScript.enabled = false;
-        else
-            Debug.LogError("MainMenu: PlayerCamera script not found!");
+        // Get main menu container
+        mainMenu = root.Q<VisualElement>("main-menu");
+        if (mainMenu == null)
+        {
+            Debug.LogError("MainMenu: 'main-menu' element not found!");
+            return;
+        }
 
-        if (playerMovementScript != null)
-            playerMovementScript.enabled = false;
-        else
-            Debug.LogError("MainMenu: PlayerMovement script not found!");
+        // Get buttons
+        Button newGameButton = mainMenu.Q<Button>("new-game-btn");
+        Button optionsButton = mainMenu.Q<Button>("option-btn");
+        Button quitButton = mainMenu.Q<Button>("quit-btn");
 
-        // Unlock cursor in the menu
-        UnityEngine.Cursor.lockState = CursorLockMode.None;
-        UnityEngine.Cursor.visible = true;
+        if (newGameButton != null) newGameButton.clicked += StartGame;
+        if (optionsButton != null) optionsButton.clicked += OpenOptionsMenu;
+        if (quitButton != null) quitButton.clicked += QuitGame;
+
+        // Ensure Options Menu is hidden
+        HideOptionsMenu();
+
+        // Pause the game initially
+        if (pauseManager != null)
+        {
+            pauseManager.Freeze();
+        }
+
+        // Ensure the correct camera is enabled
+        if (menuCamera != null) menuCamera.SetActive(true);
+        if (playerCamera != null) playerCamera.SetActive(false);
     }
 
-    public void StartGame()
+    private void StartGame()
     {
-        Debug.Log("Starting game... Loading pridebunk scene");
+        Debug.Log("MainMenu: Starting Game!");
 
-        // Hide the menu UI
-        if (menuUI != null)
+        // Unfreeze player controls
+        if (pauseManager != null)
         {
-            menuUI.SetActive(false);
-        }
-        else
-        {
-            Debug.LogWarning("MainMenu: menuUI is not assigned in the Inspector!");
+            pauseManager.Unfreeze();
         }
 
-        // Load the "pridebunk" scene to ensure correct teleportation
-        SceneManager.LoadScene("pridebunk");
+        // Switch cameras
+        if (menuCamera != null) menuCamera.SetActive(false);
+        if (playerCamera != null) playerCamera.SetActive(true);
 
-        // Find the PlayerCamera by tag "MainCamera"
-        GameObject playerCameraObj = GameObject.FindGameObjectWithTag("MainCamera");
-        if (playerCameraObj != null)
-        {
-            Camera mainCamera = playerCameraObj.GetComponent<Camera>();
-            if (mainCamera != null)
-            {
-                mainCamera.enabled = true; // Activate PlayerCamera
-            }
-            else
-            {
-                Debug.LogError("MainMenu: No Camera component found on MainCamera!");
-            }
-        }
-        else
-        {
-            Debug.LogError("MainMenu: No GameObject tagged 'MainCamera' found!");
-        }
-
-        // Enable player movement and camera control
-        if (playerCamScript != null)
-            playerCamScript.enabled = true;
-
-        if (playerMovementScript != null)
-            playerMovementScript.enabled = true;
-
-        // Lock cursor for gameplay
-        UnityEngine.Cursor.lockState = CursorLockMode.Locked;
-        UnityEngine.Cursor.visible = false;
+        // Hide UI
+        uiDocument.rootVisualElement.style.display = DisplayStyle.None;
     }
 
-    public void OpenOptions()
+    private void OpenOptionsMenu()
     {
-        Debug.Log("Options menu opened.");
+        Debug.Log("MainMenu: Opening Options Menu!");
+
+        if (optionsMenuUXML == null)
+        {
+            Debug.LogError("MainMenu: OptionsMenu UXML is not assigned!");
+            return;
+        }
+
+        // Hide main menu
+        mainMenu.style.display = DisplayStyle.None;
+
+        // Create and add Options Menu
+        optionsMenu = optionsMenuUXML.Instantiate();
+        root.Add(optionsMenu);
+
+        // Find and set up the Back button
+        Button backButton = optionsMenu.Q<Button>("back-btn");
+        if (backButton != null) backButton.clicked += HideOptionsMenu;
     }
 
-    public void QuitGame()
+    private void HideOptionsMenu()
     {
-        Debug.Log("Quitting game...");
+        Debug.Log("MainMenu: Closing Options Menu!");
+
+        // Remove options menu if it exists
+        if (optionsMenu != null)
+        {
+            root.Remove(optionsMenu);
+            optionsMenu = null;
+        }
+
+        // Show main menu
+        mainMenu.style.display = DisplayStyle.Flex;
+    }
+
+    private void QuitGame()
+    {
+        Debug.Log("MainMenu: Quitting game...");
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #else

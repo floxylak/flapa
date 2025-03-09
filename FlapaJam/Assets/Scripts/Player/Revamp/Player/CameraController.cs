@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections;
-using UnityEngine.SceneManagement;
+using UnityEngine.SceneManagement; // Added to check scene name
 
 namespace Player
 {
@@ -93,10 +93,16 @@ namespace Player
 
         private void UpdateCursorState()
         {
-            bool isMenuScene = SceneManager.GetActiveScene().name == "pridebunk";
-
-            Cursor.lockState = isMenuScene ? CursorLockMode.None : CursorLockMode.Locked;
-            Cursor.visible = isMenuScene;
+            if (SceneManager.GetActiveScene().name == "pridebunk")
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
         }
 
         private void Update()
