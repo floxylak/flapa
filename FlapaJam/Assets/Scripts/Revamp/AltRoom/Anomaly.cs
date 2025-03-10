@@ -4,8 +4,7 @@ public class Anomaly : MonoBehaviour
 {
     public enum AnomalyType
     {
-        ObjectDisappear, ObjectMoving, RadioNoise, Static,
-        StrangeAudio, FlickeringLights, LargeObject
+        ObjectDisappear, ObjectMoving, FlickeringLights
     }
 
     private AnomalyType type;
@@ -23,11 +22,11 @@ public class Anomaly : MonoBehaviour
 
         // Ensure AudioSource is available for audio-based anomalies
         audioSource = gameObject.GetComponent<AudioSource>();
-        if (audioSource == null && (type == AnomalyType.RadioNoise || type == AnomalyType.Static || type == AnomalyType.StrangeAudio))
-        {
-            audioSource = gameObject.AddComponent<AudioSource>();
-            audioSource.spatialBlend = 0f; // 2D sound for background effects
-        }
+        // if (audioSource == null && (type == AnomalyType.RadioNoise || type == AnomalyType.Static || type == AnomalyType.StrangeAudio))
+        // {
+        //     audioSource = gameObject.AddComponent<AudioSource>();
+        //     audioSource.spatialBlend = 0f; // 2D sound for background effects
+        // }
 
         switch (type)
         {
@@ -37,22 +36,22 @@ public class Anomaly : MonoBehaviour
             case AnomalyType.ObjectMoving:
                 SetupObjectMoving();
                 break;
-            case AnomalyType.RadioNoise:
-                SetupRadioNoise();
-                break;
-            case AnomalyType.Static:
-                SetupStatic();
-                break;
-            case AnomalyType.StrangeAudio:
-                SetupStrangeAudio();
-                break;
+            // case AnomalyType.RadioNoise:
+            //     SetupRadioNoise();
+            //     break;
+            // case AnomalyType.Static:
+            //     SetupStatic();
+            //     break;
+            // case AnomalyType.StrangeAudio:
+            //     SetupStrangeAudio();
+            //     break;
             case AnomalyType.FlickeringLights:
                 SetupFlickeringLights();
                 break;
-            case AnomalyType.LargeObject:
+            //case AnomalyType.LargeObject:
                 // Placeholder for future implementation
-                Debug.Log("LargeObject anomaly not yet implemented.");
-                break;
+                //Debug.Log("LargeObject anomaly not yet implemented.");
+                //break;
         }
     }
 
@@ -85,18 +84,30 @@ public class Anomaly : MonoBehaviour
     private void SetupObjectMoving()
     {
         // Find a random object in the scene to apply the Glimmer effect (assuming objects are tagged or in a container)
-        GameObject[] potentialObjects = GameObject.FindGameObjectsWithTag("MovableObject"); // Tag your movable objects
-        if (potentialObjects.Length == 0)
+        GameObject objectContainer = GameObject.Find("Object");
+        if (objectContainer == null)
         {
-            Debug.LogError("No objects tagged 'MovableObject' found for ObjectMoving anomaly!");
+            Debug.LogError("No 'Object' GameObject found in the scene!");
+            return;
+        }
+        
+        Transform[] objects = objectContainer.GetComponentsInChildren<Transform>();
+        Transform[] validObjects = System.Array.FindAll(objects, t => t != objectContainer.transform); // Exclude the container itself
+
+        if (validObjects.Length == 0)
+        {
+            Debug.LogWarning("No objects found under 'Object' to disappear!");
             return;
         }
 
-        GameObject targetObject = potentialObjects[Random.Range(0, potentialObjects.Length)];
+        // Randomly select and destroy one object
+        int randomIndex = Random.Range(0, validObjects.Length);
+
+        Transform targetObject = validObjects[randomIndex];
         Glimmer glimmer = targetObject.GetComponent<Glimmer>();
         if (glimmer == null)
         {
-            glimmer = targetObject.AddComponent<Glimmer>();
+            glimmer = targetObject.gameObject.AddComponent<Glimmer>();
             Debug.Log($"ObjectMoving: Added Glimmer script to {targetObject.name}");
         }
         else

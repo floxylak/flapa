@@ -7,7 +7,7 @@ using DG.Tweening;
 public class Glimmer : MonoBehaviour
 {
     public float showDistance = 200;
-    public GameObject model;
+    //public GameObject model;
     public float quadRotationSpeed = 30f;
     public Vector3 startScale = new Vector3(1f, 1f, 1f);
     public Vector3 endScale = new Vector3(2f, 2f, 2f);
@@ -15,21 +15,21 @@ public class Glimmer : MonoBehaviour
     private void Start()
     {
         transform.localScale = startScale;
-        ScaleObject();
+        //ScaleObject();
     }
     void Update()
     {
         // transform.LookAt(PlayerSingleton.instance.cam.cam.transform);
-        model.transform.Rotate(Vector3.forward, quadRotationSpeed * Time.deltaTime);
-        Debug.Log(Vector3.Distance(PlayerSingleton.instance.transform.position,transform.position));
-        if(Vector3.Distance(PlayerSingleton.instance.transform.position,transform.position) < showDistance)
-        {
-            model.SetActive(true);
-        }
-        else
-        {
-            model.SetActive(false);
-        }
+        transform.Rotate(Vector3.forward, quadRotationSpeed * Time.deltaTime);
+        //Debug.Log(Vector3.Distance(PlayerSingleton.instance.transform.position,transform.position));
+        // if(Vector3.Distance(PlayerSingleton.instance.transform.position,transform.position) < showDistance)
+        // {
+        //     mSetActive(true);
+        // }
+        // else
+        // {
+        //     model.SetActive(false);
+        // }
     }
     private void ScaleObject()
     {

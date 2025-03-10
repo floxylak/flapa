@@ -50,7 +50,7 @@ public class RoomManager : MonoBehaviour
                 if (pivot != null)
                 {
                     Door spawnDoor = spawnDoorObj.GetComponent<Door>();
-                    SpawnRoom(spawnDoor, pivot.position, Quaternion.identity, true);
+                    SpawnRoom(spawnDoor, pivot.position, Quaternion.Euler(0f, 90f, 0f), true);
                 }
                 else
                 {
@@ -244,8 +244,8 @@ public class RoomManager : MonoBehaviour
 
         GameObject prefab = isHallway ? hallwayPrefab : (isEndgame ? endgamePrefab : 
             (currentStage < stageRooms.Count ? stageRooms[currentStage] : stageRooms[stageRooms.Count - 1]));
-        
-        GameObject newRoomObj = Instantiate(prefab, position, rotation);
+    
+        GameObject newRoomObj = Instantiate(prefab, position, rotation); // Use provided rotation initially
         Room newRoom = newRoomObj.GetComponent<Room>();
         if (newRoom == null)
         {
@@ -267,6 +267,7 @@ public class RoomManager : MonoBehaviour
             newRoomObj.transform.rotation = Quaternion.Euler(0f, newYRotation, 0f);
             newRoom.SetSpawningDoor(sourceDoor);
         }
+        // else: Keep the provided rotation (from the 'rotation' parameter)
 
         newRoom.Initialize(currentStage, isHallway);
         occupiedPositions.Add(roundedPosition);
